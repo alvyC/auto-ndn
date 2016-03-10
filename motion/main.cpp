@@ -4,11 +4,13 @@
 int main() {
   Motion motion;
 
-  //motion.forward();
-  //delay(500);
-  //motion.stop();
+  motion.forward();
+  delay(500);
+  motion.stop();
 
+  delay(500);
   motion.turnWheelsLeft();
+
 
   return 0;
 }

@@ -1,18 +1,18 @@
-#include "PCA9685.h"
 #include <wiringPi.h>
+#include "pca9685/Adafruit_PWMServoDriver.h"
+#include <iostream>
 
 //i2c constants
 #define PCA_ADDRESS 40
-//Specific to RPi board, if board older than B use 0
-#define I2CBUS_ADDRESS 1
 
 class Motion {
 
 public:
   Motion()
-    : m_PWM(I2CBUS_ADDRESS, PCA_ADDRESS)
+    : m_PWM(PCA_ADDRESS)
     {
-      //setSpeed(2000);
+      m_PWM.begin();
+      setSpeed(2000);
       setup();
     }
 
@@ -20,8 +20,8 @@ public:
   setSpeed(int speed) {
     if( speed > 0 && speed < 4096 ) {
       m_speed = speed;
-      m_PWM.setPWM(m_EN_M0, m_speed, 0);    //50*40, 0-4095 value
-      m_PWM.setPWM(m_EN_M1, m_speed, 0);
+      m_PWM.setPWM(m_EN_M0, 0, m_speed);    //50*40, 0-4095 value
+      m_PWM.setPWM(m_EN_M1, 0, m_speed);
     }
   }
 
@@ -50,14 +50,15 @@ public:
 
   void
   turnWheelsLeft() {
-    m_PWM.setPWM(m_dirServo, 375, 0);
+    std::cout << "Turning wheels left" << std::endl;
+    m_PWM.setPWM(m_dirServo, 0, 375);
   }
 
 private:
 
   void
   setup() {
-    wiringPiSetup();    //Not sure what happens if in some other class someone would call this again
+    //wiringPiSetup();    //Not sure what happens if in some other class someone would call this again
     pinMode (m_Motor0_A, OUTPUT);
     pinMode (m_Motor0_B, OUTPUT);
     pinMode (m_Motor1_A, OUTPUT);
@@ -68,7 +69,7 @@ private:
   }
 
 private:
-  PCA9685 m_PWM;
+  Adafruit_PWMServoDriver m_PWM;
   //Should all these be declared static
   //Raspberry Pi pins connected to L298N driver
   int m_Motor0_A = 0;  //11 in GPIO python, do gpio readall

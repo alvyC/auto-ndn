@@ -1,1 +1,1 @@
-g++ motion.cpp PCA9685.cpp -lwiringPi -std=c++11
+g++ main.cpp pca9685/Adafruit_PWMServoDriver.cpp -lwiringPi -std=c++11
