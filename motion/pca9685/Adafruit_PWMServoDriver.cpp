@@ -67,6 +67,8 @@ void Adafruit_PWMServoDriver::setPWMFreq(float freq) {
   uint8_t oldmode = wiringPiI2CReadReg8(fd, PCA9685_MODE1);
   uint8_t newmode = (oldmode & 0x7F) | 0x10; // sleep
 
+  uint8_t prescale = floor(prescaleval + 0.5);
+
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, newmode); // go to sleep
   wiringPiI2CWriteReg8(fd, PCA9685_PRESCALE, prescale); // set the prescaler
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, oldmode);
