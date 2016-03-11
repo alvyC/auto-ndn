@@ -58,32 +58,23 @@ void Adafruit_PWMServoDriver::reset(void) {
 }
 
 void Adafruit_PWMServoDriver::setPWMFreq(float freq) {
-  //Serial.print("Attempting to set freq ");
-  //Serial.println(freq);
   freq *= 0.9;  // Correct for overshoot in the frequency setting (see issue #11).
   float prescaleval = 25000000;
   prescaleval /= 4096;
   prescaleval /= freq;
   prescaleval -= 1;
-  if (ENABLE_DEBUG_OUTPUT) {
-    //Serial.print("Estimated pre-scale: "); Serial.println(prescaleval);
-  }
-  uint8_t prescale = floor(prescaleval + 0.5);
-  if (ENABLE_DEBUG_OUTPUT) {
-    //Serial.print("Final pre-scale: "); Serial.println(prescale);
-  }
 
   uint8_t oldmode = wiringPiI2CReadReg8(fd, PCA9685_MODE1);
-  //cout << "oldmode: " << unsigned(oldmode) << endl;
   uint8_t newmode = (oldmode & 0x7F) | 0x10; // sleep
+
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, newmode); // go to sleep
   wiringPiI2CWriteReg8(fd, PCA9685_PRESCALE, prescale); // set the prescaler
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, oldmode);
+
   //delay(5);
   usleep(5000);
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, oldmode | 0x80);  //  This sets the MODE1 register to turn on auto increment.
                                           // This is why the beginTransmission below was not working.
-  //  Serial.print("Mode now 0x"); Serial.println(read8(PCA9685_MODE1), HEX);
 }
 
 void Adafruit_PWMServoDriver::setPWM(uint8_t num, uint16_t on, uint16_t off) {
