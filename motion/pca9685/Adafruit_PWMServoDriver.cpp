@@ -38,12 +38,13 @@ Adafruit_PWMServoDriver::Adafruit_PWMServoDriver(uint8_t addr) {
        cout << "Error setting up I2C: n" << endl;
        exit(0);
   }
-}
-
-void Adafruit_PWMServoDriver::begin(void) {
   reset();
 }
 
+//void Adafruit_PWMServoDriver::begin(void) {
+//  reset();
+//}
+//
 void Adafruit_PWMServoDriver::reset(void) {
   setAllPWM(0, 0);
   wiringPiI2CWriteReg8(fd, PCA9685_MODE2, OUTDRV);
@@ -58,7 +59,7 @@ void Adafruit_PWMServoDriver::reset(void) {
 }
 
 void Adafruit_PWMServoDriver::setPWMFreq(float freq) {
-  freq *= 0.9;  // Correct for overshoot in the frequency setting (see issue #11).
+  //freq *= 0.9;  // Correct for overshoot in the frequency setting (see issue #11).
   float prescaleval = 25000000;
   prescaleval /= 4096;
   prescaleval /= freq;

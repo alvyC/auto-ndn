@@ -1,13 +1,14 @@
 #include "motion.h"
 #include <iostream>
+#include <math.h>
+#include <unistd.h>
 
-//i2c constants
-#define PCA_ADDRESS 40
+using namespace std;
 
 Motion::Motion()
  : m_PWM(PCA_ADDRESS)
 {
-   m_PWM.begin();
+   //m_PWM.begin();
    setSpeed(2000);
    setup();
 }
@@ -39,20 +40,40 @@ Motion::forward() {
 }
 
 void
+Motion::fwdDist(int dist) {
+  forward();
+  double rps = (20.0/6.0)/(4096.0/m_speed);  //180-200 rev/min = (200)/60 rev/sec, 4096 - pwm high, m_speed
+  double diameter = 65; //mm
+  double numRev = dist/(diameter*M_PI);  //calculate the number of revolutions needed
+  double t = numRev/rps;
+  cout << t << endl;
+  usleep(t*1000000);
+  stop();
+}
+
+void
 Motion::stop() {
   digitalWrite(m_Motor0_B, LOW);
   digitalWrite(m_Motor1_A, LOW);
 }
 
+void Motion::steerHome(){
+  m_PWM.setPWM(m_dirServo, 0, homePWM);
+}
+
 void
-Motion::turnWheelsLeft() {
-  std::cout << "Turning wheels left" << std::endl;
-  m_PWM.setPWM(m_dirServo, 0, 375);
+Motion::steerLeft() {
+  m_PWM.setPWM(m_dirServo, 0, leftPWM);
+}
+
+void
+Motion::steerRight() {
+  m_PWM.setPWM(m_dirServo, 0, 50);
 }
 
 void
 Motion::setup() {
-  //wiringPiSetup();    //Not sure what happens if in some other class someone would call this again
+  //wiringPiSetup();    //already declared in adafruit library
   pinMode (m_Motor0_A, OUTPUT);
   pinMode (m_Motor0_B, OUTPUT);
   pinMode (m_Motor1_A, OUTPUT);

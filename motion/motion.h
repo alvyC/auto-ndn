@@ -2,18 +2,28 @@
 #include "pca9685/Adafruit_PWMServoDriver.h"
 
 //i2c constants
-#define PCA_ADDRESS 40
+#define PCA_ADDRESS 0x40
 
 class Motion {
 
 public:
   Motion();
 
-  void setSpeed(int speed);
+  void setSpeed( int );
   int getSpeed();
   void forward();
   void stop();
-  void turnWheelsLeft();
+  //just turn the front wheel right
+  void steerLeft();
+  //includes the forward motion required
+  //to turn
+  void turnLeft();
+  void steerRight();
+  void turnRight();
+  void steerHome();
+
+  //take distance in mm, int
+  void fwdDist( int );
 
 private:
   void setup();
@@ -36,4 +46,7 @@ private:
   uint8_t m_dirServo = 0;  //servo driver IC CH0
 
   int m_speed;
+  int leftPWM = 375;
+  int homePWM = 450;
+  int rightPWM = 575;
 };
