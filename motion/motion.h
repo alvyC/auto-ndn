@@ -18,7 +18,7 @@ public:
   //includes the forward motion required
   //to turn
   void turnLeft();
-  void steerRight();
+  void steerRight(int);
   void turnRight();
   void steerHome();
 

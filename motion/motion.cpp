@@ -67,12 +67,20 @@ Motion::steerLeft() {
 }
 
 void
-Motion::steerRight() {
-  m_PWM.setPWM(m_dirServo, 0, 50);
+Motion::steerRight(int pwm) {
+  //m_PWM.setPWM(m_dirServo, 0, pwm);
+  for (uint16_t pulselen = 160; pulselen < 600; pulselen++) {
+    m_PWM.setPWM(m_dirServo, 0, pulselen);
+  }
 }
 
 void
 Motion::setup() {
+  //Important statement
+  //I think if not set it defaults to a higher rate
+  //good enough to fry the servo
+  m_PWM.setPWMFreq(60);
+
   //wiringPiSetup();    //already declared in adafruit library
   pinMode (m_Motor0_A, OUTPUT);
   pinMode (m_Motor0_B, OUTPUT);

@@ -70,8 +70,10 @@ void Adafruit_PWMServoDriver::setPWMFreq(float freq) {
 
   uint8_t prescale = floor(prescaleval + 0.5);
 
+  cout << "hello" << int(floor(prescale)) << endl;
+
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, newmode); // go to sleep
-  wiringPiI2CWriteReg8(fd, PCA9685_PRESCALE, prescale); // set the prescaler
+  wiringPiI2CWriteReg8(fd, PCA9685_PRESCALE, int(floor(prescale)) ); // set the prescaler
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, oldmode);
 
   //delay(5);
