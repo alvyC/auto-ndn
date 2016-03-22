@@ -23,7 +23,7 @@ Motion::setSpeed(int speed) {
 }
 
 int
-Motion::getSpeed() {
+Motion::getSpeed() const {
    return m_speed;
 }
 
@@ -57,28 +57,40 @@ Motion::stop() {
   digitalWrite(m_Motor1_A, LOW);
 }
 
+
+void Motion::turnLeft() {
+  steerHome();
+  steerLeft();
+  fwdDist(540);
+  steerHome();
+}
+
+void Motion::turnRight() {
+  steerHome();
+  steerRight();
+  fwdDist(540);
+  steerHome();
+}
+
 void Motion::steerHome(){
-  m_PWM.setPWM(m_dirServo, 0, homePWM);
+  m_PWM.setPWM(m_dirServo, 0, HOME);
 }
 
 void
 Motion::steerLeft() {
-  m_PWM.setPWM(m_dirServo, 0, leftPWM);
+  m_PWM.setPWM(m_dirServo, 0, LEFT);
 }
 
 void
-Motion::steerRight(int pwm) {
-  //m_PWM.setPWM(m_dirServo, 0, pwm);
-  for (uint16_t pulselen = 160; pulselen < 600; pulselen++) {
-    m_PWM.setPWM(m_dirServo, 0, pulselen);
-  }
+Motion::steerRight() {
+  m_PWM.setPWM(m_dirServo, 0, RIGHT);
 }
 
 void
 Motion::setup() {
   //Important statement
   //I think if not set it defaults to a higher rate
-  //good enough to fry the servo
+  //that will fry the servo if driven to extreme
   m_PWM.setPWMFreq(60);
 
   //wiringPiSetup();    //already declared in adafruit library
@@ -87,6 +99,6 @@ Motion::setup() {
   pinMode (m_Motor1_A, OUTPUT);
   pinMode (m_Motor1_B, OUTPUT);
 
-  m_PWM.setPWM(m_EN_M0, m_speed, 0);
-  m_PWM.setPWM(m_EN_M1, m_speed, 0);
+  m_PWM.setPWM(m_EN_M0, 0, m_speed);
+  m_PWM.setPWM(m_EN_M1, 0, m_speed);
 }
