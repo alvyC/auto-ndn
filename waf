@@ -41,7 +41,6 @@ C3='#)'
 cwd = os.getcwd()
 join = os.path.join
 
-
 WAF='waf'
 def b(x):
 	return x

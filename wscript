@@ -20,10 +20,51 @@ def configure(conf):
 
     conf.check_boost(lib=boost_libs)
 
+    #conf.env.append_value('INCLUDES', ['src'])
+
 def build(bld):
-    bld.program(
-        features = 'cxx',
-        target = 'communicatoin',
-        source = 'src/Communication/communication.cpp',
-        use = 'NDN_CXX BOOST',
+    #bld.program(
+        #features = 'cxx',
+    #    target = 'communication',
+    #    source = 'src/Calibration/motion.cpp',
+        #use = 'NDN_CXX BOOST',
+    #    includes = 'src/Calibration/pca9685/',
+    #    export_includes='src/Calibration/pca9685/',
+    #    )
+
+#    bld.program(
+#        features = 'cxx',
+#        target = 'communication',
+#        source = 'src/communication/communication.cpp',
+#        use = 'NDN_CXX BOOST',
+#        #includes = 'src/calibration',
+#        #export_includes='src/calibration',
+#    )
+
+    comm_objects = bld(
+        target='comm-objects',
+        name='comm-objects',
+        features='cxx',
+        source=bld.path.ant_glob(['src/communication/*.cpp']),
+        use='NDN_CXX BOOST',
+        includes = 'src/calibration',
+        export_includes='src/calibration',
         )
+
+    calib_objects = bld(
+        target='calib-objects',
+        name='calib-objects',
+        features='cxx',
+        source=bld.path.ant_glob(['src/calibration/*.cpp']),
+        )
+
+    control_objects = bld(
+        target='control-objects',
+        name='control-objects',
+        features='cxx',
+        source=bld.path.ant_glob(['src/control/*.cpp']),
+        use='NDN_CXX BOOST',
+        includes=bld.path.ant_glob(['src/*']),
+        export_includes=bld.path.ant_glob(['src/*']),
+        )
+

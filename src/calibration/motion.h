@@ -1,3 +1,6 @@
+#ifndef MOTION
+#define MOTION
+
 #include <wiringPi.h>
 #include "pca9685/Adafruit_PWMServoDriver.h"
 
@@ -58,3 +61,6 @@ private:
   //int homePWM = 450;
   //int rightPWM = 575;
 };
+
+
+#endif

@@ -1,0 +1,266 @@
+# project  configured on Wed Apr 20 18:36:21 2016 by
+# waf 1.8.2 (abi 98, python 20706f0 on linux2)
+# using ./waf configure --prefix=/home/mini-ndn/pi/pi --boost-includes=/home/mini-ndn/pi/pi/include --boost-libs=/home/mini-ndn/pi/pi/lib
+#
+----------------------------------------
+Setting top to
+/home/mini-ndn/pi/auto-ndn
+----------------------------------------
+Setting out to
+/home/mini-ndn/pi/auto-ndn/build
+----------------------------------------
+Checking for 'g++' (C++ compiler)
+find program='arm-bcm2708-linux-gnueabihf-c++' paths=['/home/mini-ndn/pi/x-tools/arm-bcm2708-linux-gnueabihf/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games'] var='CXX' -> ['arm-bcm2708-linux-gnueabihf-c++']
+find program='arm-bcm2708-linux-gnueabihf-ar' paths=['/home/mini-ndn/pi/x-tools/arm-bcm2708-linux-gnueabihf/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games'] var='AR' -> ['arm-bcm2708-linux-gnueabihf-ar']
+arm-bcm2708-linux-gnueabihf-c++
+----------------------------------------
+Checking supported CXXFLAGS
+==>
+
+int main(int argc, char **argv) {
+	(void)argc; (void)argv;
+	return 0;
+}
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_3ae2258ea4243a104b5eae88d22324d2/test.cpp[0m
+
+['arm-bcm2708-linux-gnueabihf-c++', '-O2', '-g', '-std=c++11', '-I/home/mini-ndn/pi/pi/include', '-L/home/mini-ndn/pi/pi/lib', '-Werror', '-std=c++11', '../test.cpp', '-c', '-o', '/home/mini-ndn/pi/auto-ndn/build/.conf_check_3ae2258ea4243a104b5eae88d22324d2/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_3ae2258ea4243a104b5eae88d22324d2/testbuild/testprog[0m
+
+['arm-bcm2708-linux-gnueabihf-c++', '-Wl,-rpath=/home/mini-ndn/pi/pi/lib', '-L/home/mini-ndn/pi/pi/lib', 'test.cpp.1.o', '-o', '/home/mini-ndn/pi/auto-ndn/build/.conf_check_3ae2258ea4243a104b5eae88d22324d2/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+-std=c++11
+----------------------------------------
+Checking for program 'pkg-config'
+/usr/bin/pkg-config
+find program=['pkg-config'] paths=['/home/mini-ndn/pi/x-tools/arm-bcm2708-linux-gnueabihf/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games'] var='PKGCONFIG' -> ['/usr/bin/pkg-config']
+----------------------------------------
+Checking for 'libndn-cxx'
+['/usr/bin/pkg-config', '--cflags', '--libs', 'libndn-cxx']
+out: -I/home/mini-ndn/pi/pi/include  -L/home/mini-ndn/pi/pi/lib -L/usr/lib/arm-linux-gnueabihf -lndn-cxx -lboost_system-mt -lboost_filesystem-mt -lboost_date_time-mt -lboost_iostreams-mt -lboost_regex-mt -lboost_program_options-mt -lboost_chrono-mt -lboost_random-mt -lcryptopp -lsqlite3 -lrt -lpthread  
+
+yes
+----------------------------------------
+Checking boost includes
+1.50.0
+----------------------------------------
+Checking boost libs
+Found the boost path in /home/mini-ndn/pi/pi/lib with the libraries:
+    /home/mini-ndn/pi/pi/lib/libboost_chrono-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_chrono-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_chrono.a
+    /home/mini-ndn/pi/pi/lib/libboost_chrono.so
+    /home/mini-ndn/pi/pi/lib/libboost_chrono.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_date_time-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_date_time-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_date_time.a
+    /home/mini-ndn/pi/pi/lib/libboost_date_time.so
+    /home/mini-ndn/pi/pi/lib/libboost_date_time.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_exception-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_exception.a
+    /home/mini-ndn/pi/pi/lib/libboost_filesystem-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_filesystem-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_filesystem.a
+    /home/mini-ndn/pi/pi/lib/libboost_filesystem.so
+    /home/mini-ndn/pi/pi/lib/libboost_filesystem.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_graph-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_graph-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_graph.a
+    /home/mini-ndn/pi/pi/lib/libboost_graph.so
+    /home/mini-ndn/pi/pi/lib/libboost_graph.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_graph_parallel-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_graph_parallel-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_graph_parallel.a
+    /home/mini-ndn/pi/pi/lib/libboost_graph_parallel.so
+    /home/mini-ndn/pi/pi/lib/libboost_graph_parallel.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_iostreams-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_iostreams-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_iostreams.a
+    /home/mini-ndn/pi/pi/lib/libboost_iostreams.so
+    /home/mini-ndn/pi/pi/lib/libboost_iostreams.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_locale-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_locale-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_locale.a
+    /home/mini-ndn/pi/pi/lib/libboost_locale.so
+    /home/mini-ndn/pi/pi/lib/libboost_locale.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99.a
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99.so
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99f-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99f-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99f.a
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99f.so
+    /home/mini-ndn/pi/pi/lib/libboost_math_c99f.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1.a
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1.so
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1f-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1f-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1f.a
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1f.so
+    /home/mini-ndn/pi/pi/lib/libboost_math_tr1f.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_mpi-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_mpi-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_mpi.a
+    /home/mini-ndn/pi/pi/lib/libboost_mpi.so
+    /home/mini-ndn/pi/pi/lib/libboost_mpi.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-mt-py27.a
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-mt-py27.so
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-mt-py33.a
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-mt-py33.so
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-py27.a
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-py27.so
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-py27.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-py33.a
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-py33.so
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python-py33.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python.a
+    /home/mini-ndn/pi/pi/lib/libboost_mpi_python.so
+    /home/mini-ndn/pi/pi/lib/libboost_prg_exec_monitor-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_prg_exec_monitor-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_prg_exec_monitor.a
+    /home/mini-ndn/pi/pi/lib/libboost_prg_exec_monitor.so
+    /home/mini-ndn/pi/pi/lib/libboost_prg_exec_monitor.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_program_options-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_program_options-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_program_options.a
+    /home/mini-ndn/pi/pi/lib/libboost_program_options.so
+    /home/mini-ndn/pi/pi/lib/libboost_program_options.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_python-mt-py27.a
+    /home/mini-ndn/pi/pi/lib/libboost_python-mt-py27.so
+    /home/mini-ndn/pi/pi/lib/libboost_python-mt-py33.a
+    /home/mini-ndn/pi/pi/lib/libboost_python-mt-py33.so
+    /home/mini-ndn/pi/pi/lib/libboost_python-py27.a
+    /home/mini-ndn/pi/pi/lib/libboost_python-py27.so
+    /home/mini-ndn/pi/pi/lib/libboost_python-py27.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_python-py33.a
+    /home/mini-ndn/pi/pi/lib/libboost_python-py33.so
+    /home/mini-ndn/pi/pi/lib/libboost_python-py33.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_python.a
+    /home/mini-ndn/pi/pi/lib/libboost_python.so
+    /home/mini-ndn/pi/pi/lib/libboost_random-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_random-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_random.a
+    /home/mini-ndn/pi/pi/lib/libboost_random.so
+    /home/mini-ndn/pi/pi/lib/libboost_random.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_regex-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_regex-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_regex.a
+    /home/mini-ndn/pi/pi/lib/libboost_regex.so
+    /home/mini-ndn/pi/pi/lib/libboost_regex.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_serialization-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_serialization-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_serialization.a
+    /home/mini-ndn/pi/pi/lib/libboost_serialization.so
+    /home/mini-ndn/pi/pi/lib/libboost_serialization.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_signals-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_signals-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_signals.a
+    /home/mini-ndn/pi/pi/lib/libboost_signals.so
+    /home/mini-ndn/pi/pi/lib/libboost_signals.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_system-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_system-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_system.a
+    /home/mini-ndn/pi/pi/lib/libboost_system.so
+    /home/mini-ndn/pi/pi/lib/libboost_system.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_test_exec_monitor-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_test_exec_monitor.a
+    /home/mini-ndn/pi/pi/lib/libboost_thread-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_thread-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_thread.a
+    /home/mini-ndn/pi/pi/lib/libboost_thread.so
+    /home/mini-ndn/pi/pi/lib/libboost_thread.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_timer-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_timer-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_timer.a
+    /home/mini-ndn/pi/pi/lib/libboost_timer.so
+    /home/mini-ndn/pi/pi/lib/libboost_timer.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_unit_test_framework-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_unit_test_framework-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_unit_test_framework.a
+    /home/mini-ndn/pi/pi/lib/libboost_unit_test_framework.so
+    /home/mini-ndn/pi/pi/lib/libboost_unit_test_framework.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_wave-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_wave-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_wave.a
+    /home/mini-ndn/pi/pi/lib/libboost_wave.so
+    /home/mini-ndn/pi/pi/lib/libboost_wave.so.1.50.0
+    /home/mini-ndn/pi/pi/lib/libboost_wserialization-mt.a
+    /home/mini-ndn/pi/pi/lib/libboost_wserialization-mt.so
+    /home/mini-ndn/pi/pi/lib/libboost_wserialization.a
+    /home/mini-ndn/pi/pi/lib/libboost_wserialization.so
+    /home/mini-ndn/pi/pi/lib/libboost_wserialization.so.1.50.0
+Trying pattern boost_system(-gcc[0-9]{0,3})+(-1_50)+
+Trying pattern boost_system(-1_50)+
+Trying pattern boost_system(-1_50)+
+Trying pattern boost_system(-gcc[0-9]{0,3})+
+Trying pattern boost_system
+Found boost lib libboost_system-mt.a
+Trying pattern boost_chrono(-gcc[0-9]{0,3})+(-1_50)+
+Trying pattern boost_chrono(-1_50)+
+Trying pattern boost_chrono(-1_50)+
+Trying pattern boost_chrono(-gcc[0-9]{0,3})+
+Trying pattern boost_chrono
+Found boost lib libboost_chrono-mt.a
+Trying pattern boost_program_options(-gcc[0-9]{0,3})+(-1_50)+
+Trying pattern boost_program_options(-1_50)+
+Trying pattern boost_program_options(-1_50)+
+Trying pattern boost_program_options(-gcc[0-9]{0,3})+
+Trying pattern boost_program_options
+Found boost lib libboost_program_options-mt.a
+Trying pattern boost_iostreams(-gcc[0-9]{0,3})+(-1_50)+
+Trying pattern boost_iostreams(-1_50)+
+Trying pattern boost_iostreams(-1_50)+
+Trying pattern boost_iostreams(-gcc[0-9]{0,3})+
+Trying pattern boost_iostreams
+Found boost lib libboost_iostreams-mt.a
+Trying pattern boost_thread(-gcc[0-9]{0,3})+(-1_50)+
+Trying pattern boost_thread(-1_50)+
+Trying pattern boost_thread(-1_50)+
+Trying pattern boost_thread(-gcc[0-9]{0,3})+
+Trying pattern boost_thread
+Found boost lib libboost_thread-mt.a
+Trying pattern boost_regex(-gcc[0-9]{0,3})+(-1_50)+
+Trying pattern boost_regex(-1_50)+
+Trying pattern boost_regex(-1_50)+
+Trying pattern boost_regex(-gcc[0-9]{0,3})+
+Trying pattern boost_regex
+Found boost lib libboost_regex-mt.a
+Trying pattern boost_filesystem(-gcc[0-9]{0,3})+(-1_50)+
+Trying pattern boost_filesystem(-1_50)+
+Trying pattern boost_filesystem(-1_50)+
+Trying pattern boost_filesystem(-gcc[0-9]{0,3})+
+Trying pattern boost_filesystem
+Found boost lib libboost_filesystem-mt.a
+ok
+----------------------------------------
+Checking for boost linkage
+==>
+
+#include <boost/system/error_code.hpp>
+int main() { boost::system::error_code c; }
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_a5f7e3d3f6d50761a30bdc7ddfb2c78a/test.cpp[0m
+
+['arm-bcm2708-linux-gnueabihf-c++', '-std=c++11', '-O2', '-g', '-std=c++11', '-I/home/mini-ndn/pi/pi/include', '-L/home/mini-ndn/pi/pi/lib', '-I/home/mini-ndn/pi/pi/include', '-DNDEBUG', '../test.cpp', '-c', '-o', '/home/mini-ndn/pi/auto-ndn/build/.conf_check_a5f7e3d3f6d50761a30bdc7ddfb2c78a/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_a5f7e3d3f6d50761a30bdc7ddfb2c78a/testbuild/testprog[0m
+
+['arm-bcm2708-linux-gnueabihf-c++', '-Wl,-rpath=/home/mini-ndn/pi/pi/lib', '-L/home/mini-ndn/pi/pi/lib', 'test.cpp.1.o', '-o', '/home/mini-ndn/pi/auto-ndn/build/.conf_check_a5f7e3d3f6d50761a30bdc7ddfb2c78a/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/home/mini-ndn/pi/pi/lib', '-lboost_system-mt', '-lboost_chrono-mt', '-lboost_program_options-mt', '-lboost_iostreams-mt', '-lboost_thread-mt', '-lboost_regex-mt', '-lboost_filesystem-mt']
+==>
+
+#include <boost/thread.hpp>
+int main() { boost::thread t; }
+
+<==
+[1/2] Compiling [32mbuild/.conf_check_c9b2f9ec010eb3b96b7a7c4242cc822d/test.cpp[0m
+
+['arm-bcm2708-linux-gnueabihf-c++', '-std=c++11', '-O2', '-g', '-std=c++11', '-I/home/mini-ndn/pi/pi/include', '-L/home/mini-ndn/pi/pi/lib', '-I/home/mini-ndn/pi/pi/include', '-DNDEBUG', '../test.cpp', '-c', '-o', '/home/mini-ndn/pi/auto-ndn/build/.conf_check_c9b2f9ec010eb3b96b7a7c4242cc822d/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_c9b2f9ec010eb3b96b7a7c4242cc822d/testbuild/testprog[0m
+
+['arm-bcm2708-linux-gnueabihf-c++', '-Wl,-rpath=/home/mini-ndn/pi/pi/lib', '-L/home/mini-ndn/pi/pi/lib', 'test.cpp.1.o', '-o', '/home/mini-ndn/pi/auto-ndn/build/.conf_check_c9b2f9ec010eb3b96b7a7c4242cc822d/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/home/mini-ndn/pi/pi/lib', '-lboost_system-mt', '-lboost_chrono-mt', '-lboost_program_options-mt', '-lboost_iostreams-mt', '-lboost_thread-mt', '-lboost_regex-mt', '-lboost_filesystem-mt']
+ok
