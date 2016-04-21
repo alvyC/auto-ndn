@@ -2,6 +2,9 @@
 #define CONTROL
 
 #include "communication.hpp"
+#include <vector>
+
+using namespace std;
 
 namespace autondn {
 
@@ -23,13 +26,14 @@ public:
   passDecisionToCommunication();
 
   void
-  run(Communicaton& communicaton);
+  run(Communication& communication);
 
 private:
-  std::string m_decision;
+  string m_decision;
   vector<pair <int, int> > route;
   vector<pair <int, int> > alternate_route;
 
 };
 
+} //end of namespace autondn
 #endif

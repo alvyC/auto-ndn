@@ -1,2 +1,7 @@
 *.o
 *.out
+build/
+.waf-1*
+.waf3-*
+.DS*
+.lock*

@@ -1,15 +1,16 @@
 #include "control.hpp"
 #include "communication.hpp"
+#include <fstream>
 
 namespace autondn {
 
 void
-getDataFromSensor() {
+Control::getDataFromSensor() {
 
 }
 
 void
-loadMap() {
+Control::loadMap() {
   ifstream route_config;
   ifstream alternate_route_config;
   int x, y;
@@ -29,14 +30,14 @@ loadMap() {
     cout << it->first << ", " << it->second << endl;
   }*/
 
-  alternate_route.close();
+  alternate_route_config.close();
   route_config.close();
 }
 
 // "yes" / "no"
 void
-passDecisionToCalibration(Communication& communication) {
-  vector<pair <int, int> > iterator it = route.begin();
+Control::passDecisionToCalibration(Communication& communication) {
+  auto it = route.begin();
   int prev_x = it->first;
   int prev_y = it->second;
 
@@ -70,15 +71,15 @@ passDecisionToCalibration(Communication& communication) {
 
 // for broadcasting
 void
-passDecisionToCommunication() {
+Control::passDecisionToCommunication() {
 
 }
 
 void
-run(Communicaton& communicaton) {
+Control::run(Communication& communication) {
   loadMap();
   // start running
-  passDecisionToCalibration(communicaton);
+  passDecisionToCalibration(communication);
 }
 
 } //namespace autondn

@@ -20,7 +20,7 @@ def configure(conf):
 
     conf.check_boost(lib=boost_libs)
 
-    #conf.env.append_value('INCLUDES', ['src'])
+    conf.env.append_value('INCLUDES', ['src/calibration', 'src/communication'])
 
 def build(bld):
     #bld.program(
@@ -41,30 +41,41 @@ def build(bld):
 #        #export_includes='src/calibration',
 #    )
 
-    comm_objects = bld(
-        target='comm-objects',
-        name='comm-objects',
+#    comm_objects = bld(
+#        target='comm-objects',
+#        name='comm-objects',
+#        features='cxx',
+#        source=bld.path.ant_glob(['src/communication/*.cpp']),
+#        use='NDN_CXX BOOST',
+#        includes = 'src/calibration',
+#        export_includes='src/calibration',
+#        )
+
+#    calib_objects = bld(
+#        target='calib-objects',
+#        name='calib-objects',
+#        features='cxx',
+#        source=bld.path.ant_glob(['src/calibration/*.cpp']),
+#        )
+
+#    control_objects = bld(
+#        target='control-objects',
+#        name='control-objects',
+#        features='cxx',
+#        source=bld.path.ant_glob(['src/control/*.cpp']),
+#        use='NDN_CXX BOOST',
+#        includes='src/communication, src/calibration',
+#        export_includes='src/communication, src/calibration',
+#        )
+
+
+    autondn_objects = bld(
+        target='autondn-objects',
+        name='autondn-objects',
         features='cxx',
-        source=bld.path.ant_glob(['src/communication/*.cpp']),
+        source=bld.path.ant_glob(['src/**/*.cpp'],
+                                 excl=['src/main.cpp']),
         use='NDN_CXX BOOST',
-        includes = 'src/calibration',
-        export_includes='src/calibration',
+        includes='. src',
+        export_includes='. src',
         )
-
-    calib_objects = bld(
-        target='calib-objects',
-        name='calib-objects',
-        features='cxx',
-        source=bld.path.ant_glob(['src/calibration/*.cpp']),
-        )
-
-    control_objects = bld(
-        target='control-objects',
-        name='control-objects',
-        features='cxx',
-        source=bld.path.ant_glob(['src/control/*.cpp']),
-        use='NDN_CXX BOOST',
-        includes=bld.path.ant_glob(['src/*']),
-        export_includes=bld.path.ant_glob(['src/*']),
-        )
-
