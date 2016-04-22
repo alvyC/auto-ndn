@@ -9,11 +9,9 @@ def configure(conf):
     conf.load(['compiler_cxx', 'gnu_dirs',
                'default-compiler-flags', 'boost'])
 
-    if not os.environ.has_key('PKG_CONFIG_PATH'):
-        os.environ['PKG_CONFIG_PATH'] = ':'.join([
-            '/usr/lib/pkgconfig',
-            '/usr/local/lib/pkgconfig',
-            '/opt/local/lib/pkgconfig'])
+    if 'PKG_CONFIG_PATH' not in os.environ:
+        os.environ['PKG_CONFIG_PATH'] = Utils.subst_vars('${LIBDIR}/pkgconfig', conf.env)
+
     conf.check_cfg(package='libndn-cxx', args=['--cflags', '--libs'],
                    uselib_store='NDN_CXX', mandatory=True)
     boost_libs = 'system chrono program_options iostreams thread regex filesystem'
@@ -23,51 +21,6 @@ def configure(conf):
     conf.env.append_value('INCLUDES', ['src/calibration', 'src/communication'])
 
 def build(bld):
-    #bld.program(
-        #features = 'cxx',
-    #    target = 'communication',
-    #    source = 'src/Calibration/motion.cpp',
-        #use = 'NDN_CXX BOOST',
-    #    includes = 'src/Calibration/pca9685/',
-    #    export_includes='src/Calibration/pca9685/',
-    #    )
-
-#    bld.program(
-#        features = 'cxx',
-#        target = 'communication',
-#        source = 'src/communication/communication.cpp',
-#        use = 'NDN_CXX BOOST',
-#        #includes = 'src/calibration',
-#        #export_includes='src/calibration',
-#    )
-
-#    comm_objects = bld(
-#        target='comm-objects',
-#        name='comm-objects',
-#        features='cxx',
-#        source=bld.path.ant_glob(['src/communication/*.cpp']),
-#        use='NDN_CXX BOOST',
-#        includes = 'src/calibration',
-#        export_includes='src/calibration',
-#        )
-
-#    calib_objects = bld(
-#        target='calib-objects',
-#        name='calib-objects',
-#        features='cxx',
-#        source=bld.path.ant_glob(['src/calibration/*.cpp']),
-#        )
-
-#    control_objects = bld(
-#        target='control-objects',
-#        name='control-objects',
-#        features='cxx',
-#        source=bld.path.ant_glob(['src/control/*.cpp']),
-#        use='NDN_CXX BOOST',
-#        includes='src/communication, src/calibration',
-#        export_includes='src/communication, src/calibration',
-#        )
-
 
     autondn_objects = bld(
         target='autondn-objects',
@@ -78,4 +31,12 @@ def build(bld):
         use='NDN_CXX BOOST',
         includes='. src',
         export_includes='. src',
+        )
+
+    autondn = bld(
+        target='bin/autondn',
+        features='cxx cxxprogram',
+        source='src/main.cpp',
+        use='autondn-objects',
+        lib=['wiringPi']
         )
