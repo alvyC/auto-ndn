@@ -6,13 +6,15 @@
 #include <ndn-cxx/util/time.hpp>
 
 #include "motion.h"
+#include "control/control.hpp"
 
 namespace autondn {
 
 class Communication
 {
-
 public:
+  Communication();
+
   void
   onInterest(const ndn::Interest& interest);
 
@@ -30,9 +32,24 @@ public:
   void
   onTimeout(const ndn::Interest& interest);
 
+  // broadcasting data for the current road
+  void
+  sendData(const ndn::Data& data);
+
+  std::string
+  getDecision() const {
+    return m_decision;
+  }
+
+  void
+  setDecision(const std::string& decision) {
+    m_decision = decision;
+  }
+
 private:
   ndn::Face m_face;
   ndn::KeyChain m_keyChain;
+  std::string m_decision;
 };
 
 } // namespcace autondn

@@ -1,0 +1,45 @@
+#ifndef CONTROL
+#define CONTROL
+
+//#include "communication/communication.hpp"
+//#include "../"
+#include <vector>
+#include <string>
+
+#include "calibration/motion.h"
+#include "communication/communication.hpp"
+
+namespace autondn {
+
+class Control
+{
+public:
+  Control(Communication &communication,
+          Motion &motion);
+
+  void
+  getDataFromSensor();
+
+  void
+  loadMap();
+
+  // "yes" / "no"
+  void
+  passDecisionToCalibration(Communication& communication);
+
+  // for broadcasting
+  void
+  passDecisionToCommunication(Communication& communication);
+
+  void
+  run();
+
+private:
+  std::vector<std::pair <int, int>> route;
+  std::vector<std::pair <int, int>> alternate_route;
+  Motion& m_motion;
+  Communication& m_communication;
+};
+
+} //end of namespace autondn
+#endif

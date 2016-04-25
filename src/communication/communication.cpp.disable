@@ -22,6 +22,8 @@ void
 Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
   // decode data
   // pass to control module
+  std::string dataStr(reinterpret_cast<const char*>(data.getContent().value()), data.getContent().value_size());
+  m_decision = dataStr;
   std::cout << "Got Data: " << data.getName().toUri() << " for Interest: " << interest.toUri() << std::endl;
 }
 

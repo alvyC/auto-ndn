@@ -1,0 +1,10 @@
+#include "communication.hpp"
+//#include "control.hpp"
+
+int main(){
+  Communication communication;
+  Motion motion;
+  Control control(communication, motion);
+  control.run();
+  return 0;
+}
