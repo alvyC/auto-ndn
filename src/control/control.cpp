@@ -19,19 +19,19 @@ Control::getDataFromSensor() {
 }
 
 void
-Control::loadMap() {
-  std::ifstream route_config;
+Control::loadRoute() {
+  std::ifstream primary_route_config;
   std::ifstream alternate_route_config;
   int x, y;
 
-  route_config.open("route_config");
+  primary_route_config.open("primary_route_config");
+  alternate_route_config.open("alternate_route_config");
 
-
-  while (route_config >> x >> y) {
-    route.push_back(std::make_pair(x, y));
+  while (primary_route_config >> x >> y) {
+    primary_route.push_back(std::make_pair(x, y));
   }
 
-  while (route_config >> x >> y) {
+  while (alternate_route_config >> x >> y) {
     alternate_route.push_back(std::make_pair(x, y));
   }
 
@@ -40,18 +40,17 @@ Control::loadMap() {
   }*/
 
   alternate_route_config.close();
-  route_config.close();
+  primary_route_config.close();
 }
 
 // "yes" / "no"
 void
-Control::passDecisionToCalibration(Communication& communication) {
-  auto it = route.begin();
+Control::runPrimaryRoute() {
+  auto it = primary_route.begin();
   int prev_x = it->first;
   int prev_y = it->second;
 
-  bool isRouteOk = true;
-  for (; it != route.end(); ++it) {
+  for (; it != primary_route.end(); ++it) {
 
     int current_x = it->first;
     int current_y = it->second;
@@ -75,12 +74,12 @@ Control::passDecisionToCalibration(Communication& communication) {
     ndn::Interest interest(interestName);
     
     // send interest for the next road
-    communication.sendInterests(interestName);
+    m_communication.sendInterests(interestName);
 
     // broadcasting data for the current
     //communication.sendData();
 
-    if (communication.getDecision() == "Yes")  {  
+    if (m_communication.getDecision() == "Yes")  {  
         // first check whether need to turn or not
         if ((prev_x == current_x && current_x == next_x) ||
             (prev_y == current_y && current_y == next_y)) {
@@ -101,18 +100,20 @@ Control::passDecisionToCalibration(Communication& communication) {
         prev_y = current_y;
     }
     else {
-      isRouteOk = false;
+      runAlternateRoute();
       // take alternate-route
       break;
     }
   }
+}
 
-  if (!isRouteOk) {
-    auto it = route.begin();
+void
+Control::runAlternateRoute() {
+    auto it = alternate_route.begin();
     int prev_x = it->first;
     int prev_y = it->second;
 
-    for (; it != route.end(); ++it) {
+    for (; it != alternate_route.end(); ++it) {
 
     int current_x = it->first;
     int current_y = it->second;
@@ -136,41 +137,42 @@ Control::passDecisionToCalibration(Communication& communication) {
     ndn::Interest interest(interestName);
     
     // send interest for the next road
-    communication.sendInterests(interestName);
+    m_communication.sendInterests(interestName);
 
     // broadcasting data for the current
     //communication.sendData();
 
     // first check whether need to turn or not
-    if ((prev_x == current_x && current_x == next_x) ||
+      if ((prev_x == current_x && current_x == next_x) ||
         (prev_y == current_y && current_y == next_y)) {
          // go forward
         m_motion.forward();
-    }
-    else {
-      if (next_x > current_x) {
-        // turn right
-        m_motion.turnRight();
       }
       else {
-        // turn left
-        m_motion.turnLeft();
+        if (next_x > current_x) {
+          // turn right
+          m_motion.turnRight();
+        }
+        else {
+          // turn left
+          m_motion.turnLeft();
+        }
       }
+      prev_x = current_x;
+      prev_y = current_y;
     }
-    prev_x = current_x;
-    prev_y = current_y;
-  }
 }
 
 // for broadcasting
 void
-Control::passDecisionToCommunication(Communication& communication) {
-
+Control::passDecisionToCommunication() {
+  // ToDO
 }
 
 void
 Control::run() {
-  
+  loadRoute();
+  runPrimaryRoute();
 }
 
 } //namespace autondn

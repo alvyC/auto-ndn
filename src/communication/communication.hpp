@@ -6,7 +6,6 @@
 #include <ndn-cxx/util/time.hpp>
 
 #include "motion.h"
-#include "control/control.hpp"
 
 namespace autondn {
 
@@ -16,7 +15,7 @@ public:
   Communication();
 
   void
-  onInterest(const ndn::Interest& interest);
+  onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest);
 
   void
   onData(const ndn::Interest& interest, const ndn::Data& data);

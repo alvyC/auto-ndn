@@ -3,8 +3,13 @@
 
 namespace autondn {
 
+Communication::Communication()
+{
+  m_decision = "Yes";
+}
+
 void
-Communication::onInterest(const ndn::Interest& interest) {
+Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest) {
   // respond with the road status
   std::cout << interest.toUri() << " received" << std::endl;
   ndn::Name dataName(interest.getName());
@@ -44,22 +49,22 @@ void
 Communication::runProducer()
 {
   // const std::string interestFilterString = "/example/testApp";
+  m_face.setInterestFilter(ndn::InterestFilter("/Hello/World"),
+                           bind(&Communication::onInterest, this, _1, _2),
+                           std::bind([] { }),
+                           std::bind([] { }));
+
   /*m_face.setInterestFilter(ndn::InterestFilter("/example/testApp"),
-                           std::bind(&Communication::onInterest, this, _1),
-                           ndn::RegisterPrefixSuccessCallback(),
-                           std::bind(&Communication::onRegisterFailed, this, _1, _2));*/
+                           std::bind(&Communication::onInterest, this, _1)
+                          );*/
 
-  //m_face.setInterestFilter(ndn::InterestFilter("/example/testApp"),
-   //                        std::bind(&Communication::onInterest, this, _1)
-    //                      );
-
-   /*m_face.setInterestFilter(ndn::InterestFilter("/Hello/World"),
-                          std::bind([] { }),
-                          std::bind([] { }),
-                          std::bind([] { })
+  /*m_face.setInterestFilter(ndn::InterestFilter("/Hello/World"),
+                            std::bind([] { }),
+                            std::bind([] { }),
+                            std::bind([] { })
                          );*/
 
-  // m_face.processEvents();
+  m_face.processEvents();
 }
 
 void
@@ -68,7 +73,7 @@ Communication::onRegisterFailed(const ndn::Name& prefix, const std::string& reas
             << prefix << "\" in local hub's daemon (" << reason << ")"
             << std::endl;
 
-  m_face.shutdown();
+  //m_face.shutdown();
 }
 
 void

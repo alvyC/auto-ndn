@@ -7,38 +7,41 @@
 #include <string>
 
 #include "calibration/motion.h"
-#include "communication/communication.hpp"
+#include "communication.hpp"
 
 namespace autondn {
 
 class Control
 {
 public:
-  Control(Communication &communication,
-          Motion &motion);
+  Control(Communication& communication, Motion& motion);
 
+private:
   void
   getDataFromSensor();
 
   void
-  loadMap();
+  loadRoute();
 
-  // "yes" / "no"
   void
-  passDecisionToCalibration(Communication& communication);
+  runPrimaryRoute();
+
+  void
+  runAlternateRoute();
 
   // for broadcasting
   void
-  passDecisionToCommunication(Communication& communication);
+  passDecisionToCommunication();
 
+public:
   void
   run();
 
 private:
-  std::vector<std::pair <int, int>> route;
+  std::vector<std::pair <int, int>> primary_route;
   std::vector<std::pair <int, int>> alternate_route;
-  Motion& m_motion;
   Communication& m_communication;
+  Motion& m_motion;
 };
 
 } //end of namespace autondn
