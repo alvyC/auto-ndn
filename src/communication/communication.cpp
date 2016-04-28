@@ -21,6 +21,10 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   data->setName(dataName);
   data->setFreshnessPeriod(ndn::time::seconds(10));
   data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
+
+//  m_keyChain.sign(*data);
+
+  m_face.put(*data);
 }
 
 void
@@ -49,10 +53,10 @@ void
 Communication::runProducer()
 {
   // const std::string interestFilterString = "/example/testApp";
-  m_face.setInterestFilter(ndn::InterestFilter("/Hello/World"),
+  m_face.setInterestFilter(ndn::InterestFilter("/autondn"),
                            bind(&Communication::onInterest, this, _1, _2),
-                           std::bind([] { }),
-                           std::bind([] { }));
+                           ndn::RegisterPrefixSuccessCallback(),
+                           bind(&Communication::onRegisterFailed, this, _1, _2) );
 
   /*m_face.setInterestFilter(ndn::InterestFilter("/example/testApp"),
                            std::bind(&Communication::onInterest, this, _1)

@@ -65,14 +65,17 @@ Control::runPrimaryRoute() {
     //road += "/";
     road += std::to_string(next_y);
     std::cout << road << std::endl;
-    
+
     ndn::Name roadName(road);
     ndn::Name interestName("/autondn");
     interestName.append(roadName);
-    
+
     // make interest with the next road name
     ndn::Interest interest(interestName);
-    
+
+    //interest.setInterestLifetime(ndn::time::milliseconds(10000));
+    //interest.setMustBeFresh(true);
+
     // send interest for the next road
     m_communication.sendInterests(interestName);
 
