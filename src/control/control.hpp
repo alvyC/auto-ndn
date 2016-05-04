@@ -1,20 +1,28 @@
 #ifndef CONTROL
 #define CONTROL
 
-//#include "communication/communication.hpp"
-//#include "../"
 #include <vector>
 #include <string>
-
-#include "calibration/motion.h"
-#include "communication.hpp"
+#include <map>
+#include <ndn-cxx/util/scheduler.hpp>
 
 namespace autondn {
 
 class Control
 {
 public:
-  Control(Communication& communication, Motion& motion);
+  Control( ndn::util::Scheduler& );
+
+  std::string
+  getNextRoad() const { return m_nextRoad; }
+
+  std::string
+  getCurrentRoad() const { return m_currentRoad; }
+
+  void
+  setRoadStatus( std::string& road, std::string& decision ) {
+    roadStatusMap[road] = decision;
+  }
 
 private:
   void
@@ -33,6 +41,9 @@ private:
   void
   passDecisionToCommunication();
 
+  std::string
+  constructRoadName( int& , int& , int& , int& ) const;
+
 public:
   void
   run();
@@ -40,8 +51,12 @@ public:
 private:
   std::vector<std::pair <int, int>> primary_route;
   std::vector<std::pair <int, int>> alternate_route;
-  Communication& m_communication;
-  Motion& m_motion;
+
+  std::string m_currentRoad;
+  std::string m_nextRoad;
+  std::map< std::string, std::string > roadStatusMap;
+
+  ndn::util::Scheduler& m_scheduler;
 };
 
 } //end of namespace autondn

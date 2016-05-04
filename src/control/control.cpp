@@ -4,13 +4,25 @@
 #include <iostream>
 #include <ndn-cxx/name.hpp>
 #include <ndn-cxx/interest.hpp>
+#include <unistd.h> //for usleep
 
 namespace autondn {
 
-Control::Control(Communication &communication, Motion &motion)
-  : m_communication(communication)
-  , m_motion(motion)
+Control::Control( ndn::util::Scheduler& sched )
+     : m_scheduler(sched)
 {
+  loadRoute();
+
+  m_currentRoad = constructRoadName(primary_route[0].first, primary_route[0].second,
+                 primary_route[1].first, primary_route[1].second);
+  std::cout << "set current road to: " << m_currentRoad << std::endl;
+  m_nextRoad = constructRoadName(primary_route[1].first, primary_route[1].second,
+              primary_route[2].first, primary_route[2].second);
+  std::cout << "set next road to: " << m_nextRoad << std::endl;
+
+  //Mark the road as accessible for now
+  roadStatusMap[m_currentRoad] = "Yes";
+  roadStatusMap[m_nextRoad] = "Yes";
 }
 
 void
@@ -26,6 +38,16 @@ Control::loadRoute() {
 
   primary_route_config.open("primary_route_config");
   alternate_route_config.open("alternate_route_config");
+
+  if( !primary_route_config ) {
+    std::cout << "Primary route file does not exists" << std::endl;
+    exit(-1);
+  }
+
+  if( !alternate_route_config ) {
+    std::cout << "Alternate route file does not exists" << std::endl;
+    exit(-1);
+  }
 
   while (primary_route_config >> x >> y) {
     primary_route.push_back(std::make_pair(x, y));
@@ -50,6 +72,8 @@ Control::runPrimaryRoute() {
   int prev_x = it->first;
   int prev_y = it->second;
 
+  int roadNum;
+
   for (; it != primary_route.end(); ++it) {
 
     int current_x = it->first;
@@ -57,46 +81,30 @@ Control::runPrimaryRoute() {
     int next_x = (it + 1)->first;
     int next_y = (it + 1)->second;
 
-    std::string road = std::to_string(current_x);
-    //road += "/";
-    road += std::to_string(current_y);
-    //road += "/";
-    road += std::to_string(next_x);
-    //road += "/";
-    road += std::to_string(next_y);
-    std::cout << road << std::endl;
-
-    ndn::Name roadName(road);
-    ndn::Name interestName("/autondn");
-    interestName.append(roadName);
-
-    // make interest with the next road name
-    ndn::Interest interest(interestName);
-
-    //interest.setInterestLifetime(ndn::time::milliseconds(10000));
-    //interest.setMustBeFresh(true);
-
-    // send interest for the next road
-    m_communication.sendInterests(interestName);
-
-    // broadcasting data for the current
-    //communication.sendData();
-
-    if (m_communication.getDecision() == "Yes")  {  
+    if(roadStatusMap[m_nextRoad] == "Yes") {
         // first check whether need to turn or not
         if ((prev_x == current_x && current_x == next_x) ||
             (prev_y == current_y && current_y == next_y)) {
              // no need to turn, go forward
-            m_motion.forward();
+            //m_motion.forward();
+            std::cout << "Control::moving forward" << std::endl;
+            //sleep 5 seconds
+            usleep(5000000);
         }
         else {
           if (next_x > current_x) {
             // turn right
-            m_motion.turnRight();
+            //m_motion.turnRight();
+            std::cout << "Control::turning right" << std::endl;
+            //sleep 5 seconds
+            usleep(5000000);
           }
           else {
             // turn left
-            m_motion.turnLeft();
+            //m_motion.turnLeft();
+            std::cout << "Control::turning left" << std::endl;
+            //sleep 5 seconds
+            usleep(5000000);
           }
         }
         prev_x = current_x;
@@ -107,7 +115,18 @@ Control::runPrimaryRoute() {
       // take alternate-route
       break;
     }
-  }
+
+    //update roads after motion is done
+    //for the first iteration of the loop
+    //these are already set in constructor
+    m_currentRoad = m_nextRoad;
+
+    int new_next_x = (it+2)->first;
+    int new_next_y = (it+2)->second;
+
+    m_nextRoad = constructRoadName(next_x, next_y, new_next_x, new_next_y);
+
+  } //end of for loop
 }
 
 void
@@ -116,7 +135,9 @@ Control::runAlternateRoute() {
     int prev_x = it->first;
     int prev_y = it->second;
 
-    for (; it != alternate_route.end(); ++it) {
+
+    std::cout << "alternative route" << std::endl;
+/*    for (; it != alternate_route.end(); ++it) {
 
     int current_x = it->first;
     int current_y = it->second;
@@ -131,14 +152,14 @@ Control::runAlternateRoute() {
     //road += "/";
     road += std::to_string(next_y);
     //std::cout << road << std::endl;
-    
+
     ndn::Name roadName(road);
     ndn::Name interestName("/autondn");
     interestName.append(roadName);
-    
+
     // make interest with the next road name
     ndn::Interest interest(interestName);
-    
+
     // send interest for the next road
     m_communication.sendInterests(interestName);
 
@@ -163,7 +184,7 @@ Control::runAlternateRoute() {
       }
       prev_x = current_x;
       prev_y = current_y;
-    }
+    }*/
 }
 
 // for broadcasting
@@ -172,10 +193,23 @@ Control::passDecisionToCommunication() {
   // ToDO
 }
 
+std::string
+Control::constructRoadName(int &current_x, int &current_y, int &next_x, int &next_y) const {
+
+ std::string road = std::to_string(current_x);
+
+ road += std::to_string(current_y);
+ road += std::to_string(next_x);
+ road += std::to_string(next_y);
+
+ return road;
+}
+
+
+
 void
 Control::run() {
-  loadRoute();
-  runPrimaryRoute();
+  m_scheduler.scheduleEvent( ndn::time::seconds(3), ndn::bind(&Control::runPrimaryRoute, this) );
 }
 
 } //namespace autondn

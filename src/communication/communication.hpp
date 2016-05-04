@@ -4,15 +4,17 @@
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/security/key-chain.hpp>
 #include <ndn-cxx/util/time.hpp>
+#include <ndn-cxx/util/scheduler.hpp>
 
-#include "motion.h"
+//#include "motion.h"
+#include "control.hpp"
 
 namespace autondn {
 
 class Communication
 {
 public:
-  Communication();
+  Communication( Control&, ndn::Face& , ndn::Scheduler& );
 
   void
   onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest);
@@ -21,7 +23,7 @@ public:
   onData(const ndn::Interest& interest, const ndn::Data& data);
 
   void
-  sendInterests(const ndn::Interest& interest);
+  sendInterest(const ndn::Interest& interest);
 
   void
   runProducer();
@@ -45,10 +47,21 @@ public:
     m_decision = decision;
   }
 
+  void
+  startInfoRequest();
+
+  void
+  run();
+
 private:
-  ndn::Face m_face;
+  ndn::Face& m_face;
+  ndn::util::Scheduler& m_scheduler;
   ndn::KeyChain m_keyChain;
   std::string m_decision;
+
+  Control& control;
+  std::string m_nextRoad;
+  bool m_interestSent = false;
 };
 
 } // namespcace autondn
