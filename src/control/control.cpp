@@ -4,7 +4,8 @@
 #include <iostream>
 #include <ndn-cxx/name.hpp>
 #include <ndn-cxx/interest.hpp>
-#include <unistd.h> //for usleep
+#include <unistd.h>
+#include <pthread.h>
 
 namespace autondn {
 
@@ -76,12 +77,16 @@ Control::runPrimaryRoute() {
 
   for (; it != primary_route.end(); ++it) {
 
+    std::cout << "Control::current_road: " << m_currentRoad << std::endl;
+    std::cout << "Control::next_road: " << m_nextRoad << std::endl;
+
     int current_x = it->first;
     int current_y = it->second;
     int next_x = (it + 1)->first;
     int next_y = (it + 1)->second;
 
-    if(roadStatusMap[m_nextRoad] == "Yes") {
+    std::cout << "Control:: " << m_currentRoad << ": " << roadStatusMap[m_currentRoad] << std::endl;
+    if(roadStatusMap[m_currentRoad] == "Yes") {
         // first check whether need to turn or not
         if ((prev_x == current_x && current_x == next_x) ||
             (prev_y == current_y && current_y == next_y)) {
@@ -89,7 +94,7 @@ Control::runPrimaryRoute() {
             //m_motion.forward();
             std::cout << "Control::moving forward" << std::endl;
             //sleep 5 seconds
-            usleep(5000000);
+            sleep(5);
         }
         else {
           if (next_x > current_x) {
@@ -97,14 +102,14 @@ Control::runPrimaryRoute() {
             //m_motion.turnRight();
             std::cout << "Control::turning right" << std::endl;
             //sleep 5 seconds
-            usleep(5000000);
+            sleep(5);
           }
           else {
             // turn left
             //m_motion.turnLeft();
             std::cout << "Control::turning left" << std::endl;
             //sleep 5 seconds
-            usleep(5000000);
+            sleep(5);
           }
         }
         prev_x = current_x;
@@ -121,10 +126,10 @@ Control::runPrimaryRoute() {
     //these are already set in constructor
     m_currentRoad = m_nextRoad;
 
-    int new_next_x = (it+2)->first;
-    int new_next_y = (it+2)->second;
+    next_x = (it+2)->first;
+    next_y = (it+2)->second;
 
-    m_nextRoad = constructRoadName(next_x, next_y, new_next_x, new_next_y);
+    m_nextRoad = constructRoadName(next_x, next_y, (it+3)->first, (it+3)->second);
 
   } //end of for loop
 }
@@ -205,11 +210,18 @@ Control::constructRoadName(int &current_x, int &current_y, int &next_x, int &nex
  return road;
 }
 
-
-
 void
 Control::run() {
-  m_scheduler.scheduleEvent( ndn::time::seconds(3), ndn::bind(&Control::runPrimaryRoute, this) );
+//  m_scheduler.scheduleEvent( ndn::time::seconds(3), ndn::bind(&Control::runPrimaryRoute, this) );
+  usleep(2000000);
+  runPrimaryRoute();
 }
+
+void
+Control::setRoadStatus( std::string& road, std::string& decision ) {
+    roadStatusMap[road] = decision;
+    std::cout << "Control:: road: " << road << " status: " << roadStatusMap[road] << std::endl;
+}
+
 
 } //namespace autondn

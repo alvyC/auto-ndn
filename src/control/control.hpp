@@ -20,9 +20,7 @@ public:
   getCurrentRoad() const { return m_currentRoad; }
 
   void
-  setRoadStatus( std::string& road, std::string& decision ) {
-    roadStatusMap[road] = decision;
-  }
+  setRoadStatus( std::string& road, std::string& decision );
 
 private:
   void
