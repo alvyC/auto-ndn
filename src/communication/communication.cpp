@@ -114,6 +114,7 @@ Communication::startInfoRequest(){
     }
     usleep(10000);
   } //end of while
+  std::cout << "Done sending interest" << std::endl;
 } //end of startReqInfo
 
 void

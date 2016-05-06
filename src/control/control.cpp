@@ -129,6 +129,10 @@ Control::runPrimaryRoute() {
     next_y = (it+2)->second;
 
     m_nextRoad = constructRoadName(next_x, next_y, (it+3)->first, (it+3)->second);
+    if(m_nextRoad == "") {
+       std::cout << "Path finished" << std::endl;
+       break;
+    }
 
   } //end of for loop
 }
@@ -199,6 +203,10 @@ Control::passDecisionToCommunication() {
 
 std::string
 Control::constructRoadName(int &current_x, int &current_y, int &next_x, int &next_y) const {
+
+  if(current_x == 0 || current_y == 0 || next_x == 0 || next_y == 0) {
+    return "";
+  }
 
  std::string road = std::to_string(current_x);
 
