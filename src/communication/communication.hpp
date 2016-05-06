@@ -14,7 +14,7 @@ namespace autondn {
 class Communication
 {
 public:
-  Communication( Control&, ndn::Face& , ndn::Scheduler& );
+  Communication( Control&, std::string& );
 
   void
   onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest);
@@ -54,14 +54,14 @@ public:
   run();
 
 private:
-  ndn::Face& m_face;
-  ndn::util::Scheduler& m_scheduler;
+  ndn::Face m_face;
   ndn::KeyChain m_keyChain;
   std::string m_decision;
 
   Control& control;
   std::string m_nextRoad;
   bool m_interestSent = false;
+  std::string m_carName;
 };
 
 } // namespcace autondn

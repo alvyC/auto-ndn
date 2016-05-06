@@ -9,8 +9,7 @@
 
 namespace autondn {
 
-Control::Control( ndn::util::Scheduler& sched )
-     : m_scheduler(sched)
+Control::Control( )
 {
   loadRoute();
 

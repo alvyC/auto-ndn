@@ -4,14 +4,14 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <ndn-cxx/util/scheduler.hpp>
+//#include <ndn-cxx/util/scheduler.hpp>
 
 namespace autondn {
 
 class Control
 {
 public:
-  Control( ndn::util::Scheduler& );
+  Control( );
 
   std::string
   getNextRoad() const { return m_nextRoad; }
@@ -54,7 +54,6 @@ private:
   std::string m_nextRoad;
   std::map< std::string, std::string > roadStatusMap;
 
-  ndn::util::Scheduler& m_scheduler;
 };
 
 } //end of namespace autondn

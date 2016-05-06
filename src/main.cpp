@@ -2,26 +2,24 @@
 #include "control/control.hpp"
 #include "calibration/motion.h"
 
-#include <ndn-cxx/face.hpp>
-#include <ndn-cxx/util/scheduler.hpp>
-
 #include <thread>
 
-int main(){
+int main(int argc, char* argv[]){
 
-//!!!!!!!!!!!REMOVE IOSERVICE AND FACE FROM HERE SINCE DONT NEED THEM ANYMORE?
+  if (argc < 2) {
+    std::cerr << "Usage: " << argv[0] << " <carName>" << std::endl;
+    return -1;
+  }
 
-  ndn::Face face;
-  ndn::util::Scheduler scheduler(face.getIoService());
+  std::string name = std::string(argv[1]);
 
-  autondn::Control *control = new autondn::Control(scheduler);
-  autondn::Communication *communication = new autondn::Communication(*control, face, scheduler);
+  autondn::Control *control = new autondn::Control();
+  autondn::Communication *communication = new autondn::Communication(*control, name);
 
-  //order here does not matter, check when they are scheduled for
   std::thread t1(&autondn::Control::run, control);
   std::thread t2(&autondn::Communication::run, communication);
 
-//  communication->runProducer();
+  communication->runProducer();
 
   t1.join();
   t2.join();

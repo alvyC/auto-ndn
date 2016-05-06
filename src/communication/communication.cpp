@@ -4,8 +4,8 @@
 
 namespace autondn {
 
-Communication::Communication( Control& cont, ndn::Face& face, ndn::util::Scheduler& sched )
-   : m_face(face), m_scheduler(sched), control(cont), m_nextRoad(control.getCurrentRoad())
+Communication::Communication( Control& cont, std::string& name)
+   : control(cont), m_nextRoad(control.getCurrentRoad()), m_carName(name)
 {
   m_decision = "Yes";
 }
@@ -13,8 +13,14 @@ Communication::Communication( Control& cont, ndn::Face& face, ndn::util::Schedul
 void
 Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest) {
 
+  //if interest is coming from this car itself discard
+  if(interest.getName().getSubName(1,1).toUri() == m_carName) {
+    std::cout << "Interest comming from this car itself: " << interest.toUri() <<  std::endl;
+    return;
+  }
+
   // respond with the road status
-  std::cout << "Interest received for: " <<interest.toUri() <<  std::endl;
+  std::cout << "Interest received for: " << interest.toUri() <<  std::endl;
   ndn::Name dataName(interest.getName());
 
   static const std::string content = "Yes"; // get this data from visual module
@@ -33,10 +39,11 @@ void
 Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
   // decode data
   // pass to control module
+
   std::string dataStr(reinterpret_cast<const char*>(data.getContent().value()), data.getContent().value_size());
   m_decision = dataStr;
 
-  std::string roadName = data.getName().getSubName(1, 1).toUri();
+  std::string roadName = data.getName().getSubName(2, 1).toUri();
   roadName = roadName.substr(1, 4);
   std::cout << "Communication:: roadname: " << roadName << std::endl;
   //roadname and status
@@ -95,6 +102,7 @@ Communication::startInfoRequest(){
         m_interestSent = true;
 
         ndn::Name interestName("/autondn");
+        interestName.append(m_carName);
         interestName.append(control.getNextRoad());
 
         sendInterest( ndn::Interest(interestName) );
