@@ -18,7 +18,17 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   std::cout << "[communication] interest received for: " << interest.toUri() <<  std::endl;
   ndn::Name dataName(interest.getName());
 
-  static const std::string content = "Yes"; // get this data from visual module
+  std::string content = "Yes";
+  /*/80% of the time answer Yes, that is road is plyable
+  if( rand() % 100 < 80 ) {
+    content = "Yes"; // get this data from visual module
+  } else {
+    content = "No";
+  }*/
+  //Because primary route config and alter route config are set so
+  if(interest.getName().getSubName(1,1).toUri() == "/3334") {
+    content = "No";
+  }
 
   std::shared_ptr<ndn::Data> data = ndn::make_shared<ndn::Data>();
   data->setName(dataName);

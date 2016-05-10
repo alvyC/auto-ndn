@@ -65,7 +65,7 @@ private:
   Communication* m_communication;
   ndn::util::Scheduler& m_scheduler;
   bool m_isMotionDone = false;
-  std::vector<std::pair <int, int>>::iterator m_it;
+  std::vector<std::pair <int, int>>::iterator m_it, m_alter_it;
 
   int m_prev_x, m_prev_y, m_current_x, m_current_y, m_next_x, m_next_y;
 };
