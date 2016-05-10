@@ -1,26 +1,21 @@
 //#include "motion.h"
 #include "communication.hpp"
+#include "control.hpp"
 #include <unistd.h>
 
 namespace autondn {
-
-Communication::Communication( Control& cont, std::string& name)
-   : control(cont), m_nextRoad(control.getCurrentRoad()), m_carName(name)
-{
-  m_decision = "Yes";
-}
 
 void
 Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest) {
 
   //if interest is coming from this car itself discard
-  if(interest.getName().getSubName(1,1).toUri() == m_carName) {
+  /*if(interest.getName().getSubName(1,1).toUri() == m_carName) {
     std::cout << "Interest comming from this car itself: " << interest.toUri() <<  std::endl;
     return;
-  }
+  }*/
 
   // respond with the road status
-  std::cout << "Interest received for: " << interest.toUri() <<  std::endl;
+  std::cout << "[communication] interest received for: " << interest.toUri() <<  std::endl;
   ndn::Name dataName(interest.getName());
 
   static const std::string content = "Yes"; // get this data from visual module
@@ -41,15 +36,15 @@ Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
   // pass to control module
 
   std::string dataStr(reinterpret_cast<const char*>(data.getContent().value()), data.getContent().value_size());
-  m_decision = dataStr;
+  //m_decision = dataStr;
 
-  std::string roadName = data.getName().getSubName(2, 1).toUri();
+  std::string roadName = data.getName().getSubName(1, 1).toUri();
   roadName = roadName.substr(1, 4);
-  std::cout << "Communication:: roadname: " << roadName << std::endl;
+  std::cout << "[communication] roadname: " << roadName << std::endl;
   //roadname and status
-  control.setRoadStatus(roadName, dataStr);
+  control->setRoadStatus(roadName, dataStr);
 
-  std::cout << "Got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
+  std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
 }
 
 void
@@ -61,12 +56,13 @@ Communication::sendInterest(const ndn::Interest& interest) {
                          bind(&Communication::onTimeout, this, _1));
 
 
-  std::cout << "Sending interest for: " << interest.toUri() << std::endl;
+  std::cout << "[communication] sending interest for: " << interest.toUri() << std::endl;
 }
 
 void
 Communication::runProducer()
 {
+  std::cout << "[communication] Starting producer" << std::endl;
   m_face.setInterestFilter(ndn::InterestFilter("/autondn"),
                            bind(&Communication::onInterest, this, _1, _2),
                            ndn::RegisterPrefixSuccessCallback(),
@@ -89,27 +85,28 @@ Communication::onTimeout(const ndn::Interest& interest) {
   std::cout << "Timeout " << interest << std::endl;
 }
 
+/*
 void
 Communication::startInfoRequest(){
   std::cout << "Communication:: run" << std::endl;
   std::cout << "Communication::nextRoad: " << m_nextRoad << std::endl;
-  std::cout << "Communication::current road: " << control.getCurrentRoad() << std::endl;
+  std::cout << "Communication::current road: " << control->getCurrentRoad() << std::endl;
 
-  while(control.getNextRoad() != "") {
-    //std::cout << "Communication:: getNextRoad: " << control.getNextRoad() << std::endl;
-    if(m_nextRoad != control.getCurrentRoad()) {
+  while(control->getNextRoad() != "") {
+    //std::cout << "Communication:: getNextRoad: " << control->getNextRoad() << std::endl;
+    if(m_nextRoad != control->getCurrentRoad()) {
       if( !m_interestSent ) {
         m_interestSent = true;
 
         ndn::Name interestName("/autondn");
         interestName.append(m_carName);
-        interestName.append(control.getNextRoad());
+        interestName.append(control->getNextRoad());
 
         sendInterest( ndn::Interest(interestName) );
       } //end of inner if
     }
     else {
-      m_nextRoad = control.getNextRoad();
+      m_nextRoad = control->getNextRoad();
       m_interestSent = false;
     }
     usleep(10000);
@@ -123,5 +120,5 @@ Communication::run(){
    usleep(3000000);
    startInfoRequest();
 }
-
+*/
 } //namespace autondn

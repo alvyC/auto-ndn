@@ -1,28 +1,32 @@
-#include "communication/communication.hpp"
-#include "control/control.hpp"
-#include "calibration/motion.h"
+#include "communication.hpp"
+#include "control.hpp"
+#include <ndn-cxx/face.hpp>
+#include <ndn-cxx/util/scheduler.hpp>
 
-#include <thread>
+int main(/*int argc, char* argv[]*/){
 
-int main(int argc, char* argv[]){
-
-  if (argc < 2) {
+  /*if (argc < 2) {
     std::cerr << "Usage: " << argv[0] << " <carName>" << std::endl;
     return -1;
+  }*/
+
+  //std::string name = std::string(argv[1]);
+  ndn::Face face;
+
+  ndn::util::Scheduler scheduler(face.getIoService());
+
+  autondn::Control *control = new autondn::Control(scheduler);
+  autondn::Communication *communication = new autondn::Communication(face, control);
+  control->setCommunication(communication);
+
+  control->run();
+
+  try {
+    communication->runProducer();
   }
-
-  std::string name = std::string(argv[1]);
-
-  autondn::Control *control = new autondn::Control();
-  autondn::Communication *communication = new autondn::Communication(*control, name);
-
-  std::thread t1(&autondn::Control::run, control);
-  std::thread t2(&autondn::Communication::run, communication);
-
-  communication->runProducer();
-
-  t1.join();
-  t2.join();
+  catch (const std::exception& e) {
+    std::cerr << "ERROR: " << e.what() << std::endl;
+  }
 
   return 0;
 }

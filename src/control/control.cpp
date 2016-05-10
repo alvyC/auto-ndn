@@ -6,23 +6,25 @@
 #include <ndn-cxx/interest.hpp>
 #include <unistd.h>
 #include <pthread.h>
+#include "communication.hpp"
+#include <ndn-cxx/util/scheduler.hpp>
 
 namespace autondn {
 
-Control::Control( )
+Control::Control( ndn::util::Scheduler& sched )
+  : m_scheduler(sched)
 {
   loadRoute();
 
   m_currentRoad = constructRoadName(primary_route[0].first, primary_route[0].second,
                  primary_route[1].first, primary_route[1].second);
-  std::cout << "set current road to: " << m_currentRoad << std::endl;
-  m_nextRoad = constructRoadName(primary_route[1].first, primary_route[1].second,
-              primary_route[2].first, primary_route[2].second);
-  std::cout << "set next road to: " << m_nextRoad << std::endl;
 
   //Mark the road as accessible for now
   roadStatusMap[m_currentRoad] = "Yes";
-  roadStatusMap[m_nextRoad] = "Yes";
+  //roadStatusMap[m_nextRoad] = "Yes";
+  m_it = primary_route.begin();
+  m_prev_x = m_it->first;
+  m_prev_y = m_it->second;
 }
 
 void
@@ -40,12 +42,12 @@ Control::loadRoute() {
   alternate_route_config.open("alternate_route_config");
 
   if( !primary_route_config ) {
-    std::cout << "Primary route file does not exists" << std::endl;
+    std::cout << "[control] primary route file does not exists" << std::endl;
     exit(-1);
   }
 
   if( !alternate_route_config ) {
-    std::cout << "Alternate route file does not exists" << std::endl;
+    std::cout << "[control] alternate route file does not exists" << std::endl;
     exit(-1);
   }
 
@@ -68,83 +70,78 @@ Control::loadRoute() {
 // "yes" / "no"
 void
 Control::runPrimaryRoute() {
-  auto it = primary_route.begin();
-  int prev_x = it->first;
-  int prev_y = it->second;
 
-  int roadNum;
+    m_current_x = m_it->first;
+    m_current_y = m_it->second;
+    int m_next_x = (m_it + 1)->first;
+    int m_next_y = (m_it + 1)->second;
 
-  for (; it != primary_route.end(); ++it) {
+    m_currentRoad = constructRoadName(m_current_x, m_current_y, m_next_x, m_next_y);
+    m_nextRoad = constructRoadName(m_next_x, m_next_y, (m_it+2)->first, (m_it+2)->second);
 
-    std::cout << "Control::current_road: " << m_currentRoad << std::endl;
-    std::cout << "Control::next_road: " << m_nextRoad << std::endl;
+    std::cout << "[control] current_road: " << m_currentRoad << std::endl;
+    std::cout << "[control] next_road: " << m_nextRoad << std::endl;
 
-    int current_x = it->first;
-    int current_y = it->second;
-    int next_x = (it + 1)->first;
-    int next_y = (it + 1)->second;
+    if(m_nextRoad == "") {
+       std::cout << "[control] Path finished" << std::endl;
+       exit(0);
+    }
 
-    std::cout << "Control:: " << m_currentRoad << ": " << roadStatusMap[m_currentRoad] << std::endl;
+    ndn::Name interestName("/autondn");
+    interestName.append(m_nextRoad);
+
+    m_communication->sendInterest( ndn::Interest(interestName) );
+
+    std::cout << "[control] " << m_currentRoad << ": " << roadStatusMap[m_currentRoad] << std::endl;
     if(roadStatusMap[m_currentRoad] == "Yes") {
         // first check whether need to turn or not
-        if ((prev_x == current_x && current_x == next_x) ||
-            (prev_y == current_y && current_y == next_y)) {
+        if ((m_prev_x == m_current_x && m_current_x == m_next_x) ||
+            (m_prev_y == m_current_y && m_current_y == m_next_y)) {
              // no need to turn, go forward
             //m_motion.forward();
-            std::cout << "Control::moving forward" << std::endl;
-            //sleep 5 seconds
-            sleep(5);
+            std::cout << "[control] moving forward" << std::endl;
+            //This is what motion will do, sleep for 4 seconds then set motion done as true
+            m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runPrimaryRoute, this) );
         }
         else {
-          if (next_x > current_x) {
+          if (m_next_x > m_current_x) {
             // turn right
             //m_motion.turnRight();
-            std::cout << "Control::turning right" << std::endl;
-            //sleep 5 seconds
-            sleep(5);
+            std::cout << "[control] turning right" << std::endl;
+            m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runPrimaryRoute, this) );
           }
           else {
             // turn left
             //m_motion.turnLeft();
-            std::cout << "Control::turning left" << std::endl;
-            //sleep 5 seconds
-            sleep(5);
+            std::cout << "[control] turning left" << std::endl;
+            m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runPrimaryRoute, this) );
           }
         }
-        prev_x = current_x;
-        prev_y = current_y;
+        m_prev_x = m_current_x;
+        m_prev_y = m_current_y;
     }
     else {
-      runAlternateRoute();
       // take alternate-route
-      break;
+      runAlternateRoute();
     }
 
-    //update roads after motion is done
-    //for the first iteration of the loop
-    //these are already set in constructor
-    m_currentRoad = m_nextRoad;
-
-    next_x = (it+2)->first;
-    next_y = (it+2)->second;
-
-    m_nextRoad = constructRoadName(next_x, next_y, (it+3)->first, (it+3)->second);
-    if(m_nextRoad == "") {
-       std::cout << "Path finished" << std::endl;
-       break;
+    if(m_it != primary_route.end()) {
+       ++m_it;
+    } else {
+       std::cout << "[control] Path finished" << std::endl;
+       exit(0);
     }
-
-  } //end of for loop
 }
 
 void
 Control::runAlternateRoute() {
-    auto it = alternate_route.begin();
+    /*auto it = alternate_route.begin();
     int prev_x = it->first;
-    int prev_y = it->second;
+    int prev_y = it->second;*/
 
 
-    std::cout << "alternative route" << std::endl;
+    std::cout << "[control] taking alternative route" << std::endl;
+    exit(0);
 /*    for (; it != alternate_route.end(); ++it) {
 
     int current_x = it->first;
@@ -219,15 +216,15 @@ Control::constructRoadName(int &current_x, int &current_y, int &next_x, int &nex
 
 void
 Control::run() {
-//  m_scheduler.scheduleEvent( ndn::time::seconds(3), ndn::bind(&Control::runPrimaryRoute, this) );
-  usleep(2000000);
-  runPrimaryRoute();
+  m_scheduler.scheduleEvent( ndn::time::seconds(3), ndn::bind(&Control::runPrimaryRoute, this) );
+  //usleep(3000000);
+  //runPrimaryRoute();
 }
 
 void
 Control::setRoadStatus( std::string& road, std::string& decision ) {
     roadStatusMap[road] = decision;
-    std::cout << "Control:: road: " << road << " status: " << roadStatusMap[road] << std::endl;
+    std::cout << "[control] road: " << road << " status: " << roadStatusMap[road] << std::endl;
 }
 
 

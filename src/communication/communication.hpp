@@ -7,14 +7,16 @@
 #include <ndn-cxx/util/scheduler.hpp>
 
 //#include "motion.h"
-#include "control.hpp"
+//#include "control.hpp"
 
 namespace autondn {
+
+class Control;
 
 class Communication
 {
 public:
-  Communication( Control&, std::string& );
+  Communication( ndn::Face& face, Control* cont ): m_face(face), control(cont) {};
 
   void
   onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest);
@@ -37,7 +39,7 @@ public:
   void
   sendData(const ndn::Data& data);
 
-  std::string
+  /*std::string
   getDecision() const {
     return m_decision;
   }
@@ -51,17 +53,17 @@ public:
   startInfoRequest();
 
   void
-  run();
+  run();*/
 
 private:
-  ndn::Face m_face;
+  ndn::Face& m_face;
   ndn::KeyChain m_keyChain;
-  std::string m_decision;
+  //std::string m_decision;
 
-  Control& control;
-  std::string m_nextRoad;
-  bool m_interestSent = false;
-  std::string m_carName;
+  Control* control;
+  //std::string m_nextRoad;
+  //bool m_interestSent = false;
+  //std::string m_carName;
 };
 
 } // namespcace autondn
