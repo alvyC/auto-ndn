@@ -1,4 +1,4 @@
-#include "motion.h"
+#include "motion.hpp"
 #include <iostream>
 #include <math.h>
 #include <unistd.h>
@@ -40,7 +40,7 @@ Motion::forward() {
 }
 
 void
-Motion::fwdDist(int dist) {
+Motion::forwardDist(int dist) {
   forward();
   double rps = (20.0/6.0)/(4096.0/m_speed);  //180-200 rev/min = (200)/60 rev/sec, 4096 - pwm high, m_speed
   double diameter = 65; //mm
@@ -61,14 +61,14 @@ Motion::stop() {
 void Motion::turnLeft() {
   steerHome();
   steerLeft();
-  fwdDist(540);
+  forwardDist(540);
   steerHome();
 }
 
 void Motion::turnRight() {
   steerHome();
   steerRight();
-  fwdDist(540);
+  forwardDist(540);
   steerHome();
 }
 

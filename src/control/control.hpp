@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <ndn-cxx/util/scheduler.hpp>
+#include "motion.hpp"
 
 namespace autondn {
 
@@ -68,6 +69,7 @@ private:
   std::vector<std::pair <int, int>>::iterator m_it, m_alter_it;
 
   int m_prev_x, m_prev_y, m_current_x, m_current_y, m_next_x, m_next_y;
+  Motion m_motion;
 };
 
 } //end of namespace autondn

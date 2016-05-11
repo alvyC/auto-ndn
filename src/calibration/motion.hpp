@@ -34,7 +34,7 @@ public:
   void steerHome();
 
   //take distance in mm, int
-  void fwdDist( int );
+  void forwardDist( int );
 
 private:
   void setup();
