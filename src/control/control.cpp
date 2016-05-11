@@ -96,23 +96,23 @@ Control::runPrimaryRoute() {
         if ((m_prev_x == m_current_x && m_current_x == m_next_x) ||
             (m_prev_y == m_current_y && m_current_y == m_next_y)) {
              // no need to turn, go forward
-            //m_motion.forward();
             std::cout << "[control] moving forward" << std::endl;
             //Sleep for 5 seconds even if motion is done before that - will change this later
-            m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Motion::forwardDist, m_motion, 520) );
+            m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) );
+            m_motion.forwardDist(520);
         }
         else {
           if (m_next_x > m_current_x) {
             // turn right
-            //m_motion.turnRight();
             std::cout << "[control] turning right" << std::endl;
-            m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Motion::turnRight, m_motion) ) ;
+            m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) ) ;
+            m_motion.turnRight();
           }
           else {
             // turn left
-            //m_motion.turnLeft();
             std::cout << "[control] turning left" << std::endl;
-            m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Motion::turnLeft, m_motion) );
+            m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) );
+            m_motion.turnLeft();
           }
         }
         m_prev_x = m_current_x;
