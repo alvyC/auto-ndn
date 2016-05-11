@@ -23,6 +23,8 @@ Control::Control( ndn::util::Scheduler& sched )
   roadStatusMap[m_currentRoad] = "Yes";
 
   m_it = primary_route.begin();
+  m_prev_x = m_it->first;
+  m_prev_y = m_it->second;
   m_alter_it = alternate_route.begin();
 }
 
@@ -99,22 +101,23 @@ Control::runPrimaryRoute() {
             std::cout << "[control] moving forward" << std::endl;
             //Sleep for 5 seconds even if motion is done before that - will change this later
             m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) );
-            m_motion.forwardDist(520);
+            //m_motion.forwardDist(520);
         }
         else {
           if (m_next_x > m_current_x) {
             // turn right
             std::cout << "[control] turning right" << std::endl;
             m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) ) ;
-            m_motion.turnRight();
+            //m_motion.turnRight();
           }
           else {
             // turn left
             std::cout << "[control] turning left" << std::endl;
             m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) );
-            m_motion.turnLeft();
+            //m_motion.turnLeft();
           }
         }
+        std::cout << std::endl;
         m_prev_x = m_current_x;
         m_prev_y = m_current_y;
     }
