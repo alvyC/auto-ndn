@@ -81,7 +81,7 @@ Control::runPrimaryRoute() {
     std::cout << "[control] current_road: " << m_currentRoad << std::endl;
     std::cout << "[control] next_road: " << m_nextRoad << std::endl;
 
-    if(m_nextRoad == "") {
+    if(m_currentRoad == "") {
        std::cout << "[control] Path finished" << std::endl;
        exit(0);
     }
@@ -101,20 +101,20 @@ Control::runPrimaryRoute() {
             std::cout << "[control] moving forward" << std::endl;
             //Sleep for 5 seconds even if motion is done before that - will change this later
             m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) );
-            //m_motion.forwardDist(520);
+            m_motion.forwardDist(520);
         }
         else {
           if (m_next_x > m_current_x) {
             // turn right
             std::cout << "[control] turning right" << std::endl;
             m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) ) ;
-            //m_motion.turnRight();
+            m_motion.turnRight();
           }
           else {
             // turn left
             std::cout << "[control] turning left" << std::endl;
             m_scheduler.scheduleEvent( ndn::time::seconds(5), ndn::bind(&Control::runPrimaryRoute, this) );
-            //m_motion.turnLeft();
+            m_motion.turnLeft();
           }
         }
         std::cout << std::endl;
