@@ -5,8 +5,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/cstdint.hpp>
 
-//class AutoNdn;
-
 namespace autondn {
 
 class ConfFileProcessor {

@@ -7,7 +7,9 @@
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/util/scheduler.hpp>
 #include <ndn-cxx/security/key-chain.hpp>
+#include <ndn-cxx/security/validator-config.hpp>
 
+#include <boost/property_tree/ptree.hpp>
 #include <boost/cstdint.hpp>
 
 #include "conf-parameter.hpp"
@@ -41,12 +43,27 @@ public:
   void
   run();
 
+  void
+  loadValidator(boost::property_tree::ptree section,
+                         const std::string& fileName) {
+    m_validator.load(section, fileName);
+  }
+
+  ndn::ValidatorConfig&
+  getValidator() {
+    return m_validator;
+  }
+
+  void
+  initializeKey();
+
 private:
   ndn::Face& m_face;
   ndn::Scheduler& m_scheduler;
   Control* m_control;
   Communication* m_communication;
   ConfParameter m_confParameter;
+  ndn::ValidatorConfig m_validator;
   //ndn::KeyChain& m_keyChain;
 };
 

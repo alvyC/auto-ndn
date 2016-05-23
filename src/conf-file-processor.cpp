@@ -1,3 +1,4 @@
+
 #include <ndn-cxx/name.hpp>
 #include <boost/property_tree/info_parser.hpp>
 #include <iostream>
@@ -7,9 +8,7 @@
 //#include "auto-ndn.hpp"
 
 namespace autondn {
-
   using namespace std;
-
   ConfFileProcessor::ConfFileProcessor(AutoNdn& autondn, std::string& confFileName)
     : m_confFileName(confFileName)
     , m_autondn(autondn)
@@ -106,7 +105,7 @@ namespace autondn {
 
         ndn::Name idName(id);
         if (!idName.empty()) {
-          // set the id name in confparamete
+          // set the id name in confparameter
           m_autondn.getConfParameter().setCarId(idName);
         }
         else {
@@ -122,6 +121,15 @@ namespace autondn {
 
     bool
     ConfFileProcessor::processSectionSecurity(const ConfigSection& section) {
+      ConfigSection::const_iterator  it = section.begin();
+
+      if (it == section.end() ||  it->first != "validator") {
+        std::cerr << "Error: Expect validator section!" << std::endl;
+        return false;
+      }
+
+      m_autondn.loadValidator(it->second, m_confFileName);
+
       return true;
     }
 } // end of namespace autondn
