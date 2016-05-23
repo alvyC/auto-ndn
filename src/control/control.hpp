@@ -1,5 +1,5 @@
-#ifndef CONTROL
-#define CONTROL
+#ifndef CONTROL_HPP
+#define CONTROL_HPP
 
 #include <vector>
 #include <string>
@@ -73,4 +73,5 @@ private:
 };
 
 } //end of namespace autondn
-#endif
+
+#endif // CONTROL_HPP

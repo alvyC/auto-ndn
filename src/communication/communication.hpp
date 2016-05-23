@@ -1,5 +1,5 @@
-#ifndef COMMUNICATION
-#define COMMUNICATION
+#ifndef COMMUNICATION_HPP
+#define COMMUNICATION_HPP
 
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/security/key-chain.hpp>
@@ -97,4 +97,4 @@ private:
 
 } // namespcace autondn
 
-#endif
+#endif // COMMUNICATION_HPP
