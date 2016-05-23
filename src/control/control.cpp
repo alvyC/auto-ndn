@@ -83,7 +83,9 @@ Control::runPrimaryRoute() {
 
     if(m_currentRoad == "") {
        std::cout << "[control] Path finished" << std::endl;
-       exit(0);
+       //m_motion.forwardDist(250);
+       return;
+       //exit(0);
     }
 
     ndn::Name interestName("/autondn");
@@ -130,7 +132,9 @@ Control::runPrimaryRoute() {
        ++m_it;
     } else {
        std::cout << "[control] Path finished" << std::endl;
-       exit(0);
+       //m_motion.forwardDist(250);
+       return;
+       //exit(0);
     }
 }
 
@@ -147,12 +151,14 @@ Control::runAlternateRoute() {
   m_nextRoad = constructRoadName(m_next_x, m_next_y, (m_alter_it+2)->first, (m_alter_it+2)->second);
   //Set next road as yes, if response is negative it will change in onInterest
   roadStatusMap[m_nextRoad] = "Yes";
+  roadStatusMap[m_currentRoad] = "Yes";
 
   std::cout << "[control] current_road: " << m_currentRoad << std::endl;
   std::cout << "[control] next_road: " << m_nextRoad << std::endl;
 
-  if(m_nextRoad == "") {
+  if(m_currentRoad == "") {
     std::cout << "[control] Path finished" << std::endl;
+    m_motion.forwardDist(100);
     exit(0);
   }
 
@@ -172,20 +178,21 @@ Control::runAlternateRoute() {
       //m_motion.forward();
       std::cout << "[control] moving forward" << std::endl;
       //This is what motion will do, sleep for 4 seconds then set motion done as true
-      m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runPrimaryRoute, this) );
+      m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runAlternateRoute, this) );
+      m_motion.forwardDist(450);
     }
     else {
       if (m_next_x > m_current_x) {
         // turn right
-        //m_motion.turnRight();
         std::cout << "[control] turning right" << std::endl;
-        m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runPrimaryRoute, this) );
+        m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runAlternateRoute, this) );
+        m_motion.turnRight();
       }
       else {
         // turn left
-        //m_motion.turnLeft();
         std::cout << "[control] turning left" << std::endl;
-        m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runPrimaryRoute, this) );
+        m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runAlternateRoute, this) );
+        m_motion.turnLeft();
        }
     }
       m_prev_x = m_current_x;
@@ -193,18 +200,16 @@ Control::runAlternateRoute() {
   }  //end of outer if
   else {
     // take alternate-route
-    runAlternateRoute();
+    //runAlternateRoute();
   }
 
-  if(m_alter_it != primary_route.end()) {
+  if(m_alter_it != alternate_route.end()) {
     ++m_alter_it;
   } else {
+    m_motion.forwardDist(100);
     std::cout << "[control] Path finished" << std::endl;
     exit(0);
   }
-
-
-  exit(0);
 }
 
 // for broadcasting
@@ -216,6 +221,7 @@ Control::passDecisionToCommunication() {
 std::string
 Control::constructRoadName(int &current_x, int &current_y, int &next_x, int &next_y) const {
 
+  std::cout << "[control] constructing roadname: current_x: " << current_x << ", current_y: " << current_y << ", next_x: " << next_x << ", next_y: "<< next_y << std::endl;
   if(current_x == 0 || current_y == 0 || next_x == 0 || next_y == 0) {
     return "";
   }

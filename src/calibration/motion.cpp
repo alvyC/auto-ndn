@@ -61,14 +61,14 @@ Motion::stop() {
 void Motion::turnLeft() {
   steerHome();
   steerLeft();
-  forwardDist(540);
+  forwardDist(530);
   steerHome();
 }
 
 void Motion::turnRight() {
   steerHome();
   steerRight();
-  forwardDist(540);
+  forwardDist(480);
   steerHome();
 }
 

@@ -13,7 +13,7 @@
 //servo to the extreme
 #define LEFT 345
 #define RIGHT 545
-#define HOME 420
+#define HOME 410
 
 class Motion {
 
