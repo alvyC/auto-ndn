@@ -1,4 +1,5 @@
 #include "conf-file-processor.hpp"
+//#include "auto-ndn.hpp"
 
 namespace autondn {
   /*ConfFileProcessor::ConfFileProcessor(AutoNdn& autondn, std::string& confFileName)

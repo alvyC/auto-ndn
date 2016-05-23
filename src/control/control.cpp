@@ -1,3 +1,4 @@
+
 #include "control.hpp"
 #include <fstream>
 #include <string>
@@ -158,7 +159,7 @@ Control::runAlternateRoute() {
 
   if(m_currentRoad == "") {
     std::cout << "[control] Path finished" << std::endl;
-    m_motion.forwardDist(100);
+    //m_motion.forwardDist(100);
     exit(0);
   }
 
@@ -179,20 +180,20 @@ Control::runAlternateRoute() {
       std::cout << "[control] moving forward" << std::endl;
       //This is what motion will do, sleep for 4 seconds then set motion done as true
       m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runAlternateRoute, this) );
-      m_motion.forwardDist(450);
+      //m_motion.forwardDist(450);
     }
     else {
       if (m_next_x > m_current_x) {
         // turn right
         std::cout << "[control] turning right" << std::endl;
         m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runAlternateRoute, this) );
-        m_motion.turnRight();
+        //m_motion.turnRight();
       }
       else {
         // turn left
         std::cout << "[control] turning left" << std::endl;
         m_scheduler.scheduleEvent( ndn::time::seconds(4), ndn::bind(&Control::runAlternateRoute, this) );
-        m_motion.turnLeft();
+        //m_motion.turnLeft();
        }
     }
       m_prev_x = m_current_x;
@@ -206,7 +207,7 @@ Control::runAlternateRoute() {
   if(m_alter_it != alternate_route.end()) {
     ++m_alter_it;
   } else {
-    m_motion.forwardDist(100);
+    //m_motion.forwardDist(100);
     std::cout << "[control] Path finished" << std::endl;
     exit(0);
   }

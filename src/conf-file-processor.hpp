@@ -4,7 +4,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/cstdint.hpp>
 
-#include "auto-ndn.hpp"
+//#include "auto-ndn.hpp"
+class AutoNdn;
 
 namespace autondn {
 

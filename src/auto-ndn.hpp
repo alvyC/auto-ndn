@@ -1,11 +1,11 @@
 #ifndef AUTO_NDN_HPP
 #define AUTO_NDN_HPP
 
+#include <boost/cstdint.hpp>
+
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/util/scheduler.hpp>
 #include <ndn-cxx/security/key-chain.hpp>
-
-#include <boost/cstdint.hpp>
 
 #include "communication/communication.hpp"
 #include "control/control.hpp"
