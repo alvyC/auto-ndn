@@ -5,7 +5,7 @@
 
 namespace autondn {
 
-class ConfParameter { 
+class ConfParameter {
 public:
   ConfParameter();
 
@@ -47,7 +47,7 @@ public:
   const ndn::Name&
   getCarId() const {
     return m_carId;
-  }  
+  }
 
   void
   printConfParameters() const;

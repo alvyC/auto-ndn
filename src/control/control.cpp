@@ -1,4 +1,3 @@
-
 #include "control.hpp"
 #include <fstream>
 #include <string>
@@ -248,6 +247,5 @@ Control::setRoadStatus( std::string& road, std::string& decision ) {
     roadStatusMap[road] = decision;
     std::cout << "[control] road: " << road << " status: " << roadStatusMap[road] << std::endl;
 }
-
 
 } //namespace autondn

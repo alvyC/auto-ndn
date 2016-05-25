@@ -1,3 +1,6 @@
+#include "communication.hpp"
+#include "control.hpp"
+#include "map.hpp"
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/util/scheduler.hpp>
 
@@ -9,7 +12,7 @@
 class Error : public std::runtime_error {
 public:
   explicit
-  Error(const std::string& what) 
+  Error(const std::string& what)
     : std::runtime_error(what)
   {
   }
@@ -23,7 +26,7 @@ int main(/*int argc, char* argv[]*/){
   }*/
 
   //std::string name = std::string(argv[1]);
-  ndn::Face face;
+/*  ndn::Face face;
 
   ndn::util::Scheduler scheduler(face.getIoService());
 
@@ -48,6 +51,8 @@ int main(/*int argc, char* argv[]*/){
   else {
     throw Error("Error in configuration file processing! Exiting from Autondn");
   }
-  
+*/
+  autondn::Map my_map;
+  my_map.processMap();
   return 0;
 }

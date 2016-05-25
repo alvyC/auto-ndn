@@ -7,7 +7,9 @@
 //#include "auto-ndn.hpp"
 
 namespace autondn {
+
   using namespace std;
+
   ConfFileProcessor::ConfFileProcessor(AutoNdn& autondn, std::string& confFileName)
     : m_confFileName(confFileName)
     , m_autondn(autondn)
