@@ -53,6 +53,14 @@ int main(/*int argc, char* argv[]*/){
   }
 */
   autondn::Map my_map;
-  my_map.processMap();
+  //my_map.processMap();
+  std::string start = "1,1";
+  std::string end = "4,4";
+  my_map.calculatePath(start, end);
+
+  std::string n1 = "3,3";
+  std::string n2 = "3,4";
+  my_map.removeLink(n1, n2);
+  my_map.calculatePath(n1, end);
   return 0;
 }

@@ -17,12 +17,31 @@ class Map {
 
 public:
   Map() {
-
+    readMap();
+    processMap();
   }
 
   ~Map(){
-    delete edge_array, weights;
+    delete edge_array;
+    delete weights;
   }
+
+  void
+  calculatePath( std::string&, std::string& );
+
+  //It is upto the controller to decide when to add a link back
+  //after removing it
+
+  //return the link distance
+  int
+  removeLink( std::string&, std::string& );
+
+  bool
+  addLink( std::string&, std::string&, int& );
+
+private:
+  void
+  readMap();
 
   void
   processMap();
@@ -38,6 +57,7 @@ private:
   int num_nodes, num_links, num_arcs;
   std::vector<std::string> nodes, links;
 
+  std::vector<std::pair<Edge, int>> edgeVector;
   Edge *edge_array;
   int *weights;
 };
