@@ -1,0 +1,32 @@
+top = '..'
+
+def build(bld):
+    # Unit tests
+    if bld.env['WITH_TESTS']:
+        unit_test_main = bld(
+            target='unit-tests-main',
+            name='unit-tests-main',
+            features='cxx',
+            source=bld.path.ant_glob(['**/*.cpp'], excl=['nsync/**/*']),
+            use='nlsr-objects',
+          )
+
+        # nsync tests
+        unit_tests_nsync = bld.program(
+            target='../unit-tests-nsync',
+            features='cxx cxxprogram',
+            source=bld.path.ant_glob(['nsync/**/*.cc']),
+            use='nsync-objects unit-tests-main',
+            includes='.',
+            install_path=None,
+          )
+
+        # autondn tests
+        unit_tests_nlsr = bld.program(
+            target='../unit-tests-nlsr',
+            features='cxx cxxprogram',
+            source=bld.path.ant_glob(['nlsr/**/*.cpp']),
+            use='nlsr-objects unit-tests-main',
+            includes='.',
+            install_path=None,
+          )

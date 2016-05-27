@@ -1,7 +1,19 @@
-#include "communication.hpp"
-#include "control.hpp"
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/util/scheduler.hpp>
+
+#include "communication.hpp"
+#include "control.hpp"
+#include "auto-ndn.hpp"
+#include "conf-file-processor.hpp"
+
+class Error : public std::runtime_error {
+public:
+  explicit
+  Error(const std::string& what) 
+    : std::runtime_error(what)
+  {
+  }
+};
 
 int main(/*int argc, char* argv[]*/){
 
@@ -17,16 +29,25 @@ int main(/*int argc, char* argv[]*/){
 
   autondn::Control *control = new autondn::Control(scheduler);
   autondn::Communication *communication = new autondn::Communication(face, control);
-  control->setCommunication(communication);
+  //control->setCommunication(communication);
 
-  control->run();
+  /*control->run();
 
   try {
     communication->runProducer();
   }
   catch (const std::exception& e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
+  }*/
+  std::string confFileName = "auto-ndn.conf";
+  autondn::AutoNdn autoNdn(face, scheduler, control, communication);
+  autondn::ConfFileProcessor fileProcessor(autoNdn, confFileName);
+  if (fileProcessor.processConfFile()) {
+    autoNdn.run();
   }
-
+  else {
+    throw Error("Error in configuration file processing! Exiting from Autondn");
+  }
+  
   return 0;
 }

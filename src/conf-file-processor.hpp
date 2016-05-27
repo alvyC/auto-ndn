@@ -1,18 +1,18 @@
 #ifndef CONF_FILE_PROCESSOR_HPP
 #define CONF_FILE_PROCESSOR_HPP
 
+#include "auto-ndn.hpp"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/cstdint.hpp>
 
-//#include "auto-ndn.hpp"
-class AutoNdn;
+//class AutoNdn;
 
 namespace autondn {
 
 class ConfFileProcessor {
 public:
 ConfFileProcessor(AutoNdn& autondn, std::string& confFileName);
- 
+
  bool
  processConfFile();
 

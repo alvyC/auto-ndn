@@ -10,45 +10,56 @@ public:
   ConfParameter();
 
   void
-  setCarModel(std::string carModel) {
+  setNetwork(ndn::Name network) {
+    m_network = network;
+  }
+
+  const ndn::Name&
+  getNetwork() const {
+    return m_network;
+  }
+
+  void
+  setCarModel(ndn::Name carModel) {
     m_carModel = carModel;
   }
 
-  std::string
+  const ndn::Name&
   getCarModel() const {
     return m_carModel;
   }
 
   void
-  setCarMake(std::string carMake) {
+  setCarMake(ndn::Name carMake) {
     m_carMake = carMake;
   }
 
-  std::string
+  const ndn::Name&
   getCarMake() const {
     return m_carMake;
   }
 
   void
-  setCarId(std::string carId) {
+  setCarId(ndn::Name carId) {
     m_carId = carId;
   }
 
-  std::string
+  const ndn::Name&
   getCarId() const {
     return m_carId;
   }  
 
   void
-  printConfParameters();
+  printConfParameters() const;
 
-  ndn::Name
+  ndn::Name&
   getCarName();
 
 private:
-    std::string m_carMake;
-    std::string m_carModel;
-    std::string m_carId;
+    ndn::Name m_network;
+    ndn::Name m_carMake;
+    ndn::Name m_carModel;
+    ndn::Name m_carId;
     ndn::Name m_carName;
 };
 
