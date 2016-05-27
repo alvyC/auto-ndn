@@ -24,24 +24,14 @@ int main(){
 
   autondn::Control *control = new autondn::Control(scheduler);
   autondn::Communication *communication = new autondn::Communication(face, control);
-  control->setCommunication(communication);
+  //control->setCommunication(communication);
 
-/*  control->run();
-
-  try {
-    communication->runProducer();
-  }
-  catch (const std::exception& e) {
-    std::cerr << "ERROR: " << e.what() << std::endl;
-  }
-
-*/
   std::string confFileName = "auto-ndn.conf";
   autondn::AutoNdn autoNdn(face, scheduler, control, communication);
   autondn::ConfFileProcessor fileProcessor(autoNdn, confFileName);
   if (fileProcessor.processConfFile()) {
     std::cout << "success" << std::endl;
-    //autoNdn.run();
+    autoNdn.run();
   }
   else {
     throw Error("Error in configuration file processing! Exiting from Autondn");
