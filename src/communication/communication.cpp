@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <ndn-cxx/security/signing-helpers.hpp>
 
-
 namespace autondn {
 
 void
@@ -27,8 +26,8 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   } else {
     content = "No";
   }*/
-  //Because primary route config and alter route config are set so
-  if(interest.getName().getSubName(1,1).toUri() == "/3334") {
+  //Just a test for now
+  if(interest.getName().getSubName(1,1).toUri() == "/3%2C3-3%2C4p") {
     content = "No";
   }
 
@@ -46,12 +45,18 @@ void
 Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
   // for debugging
   std::string dataStr(reinterpret_cast<const char*>(data.getContent().value()), data.getContent().value_size());
-  std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
 
-  // first validate data
-  m_validator->validate(data,
-                        ndn::bind(&Communication::onValidated, this, _1),
-                        ndn::bind(&Communication::onValidationFailed, this, _1, _2));
+  //m_decision = dataStr;
+
+  std::string roadName = (data.getName().getSubName(1, 1)).toUri();
+  roadName = roadName.substr(1, roadName.length()-1);
+  roadName.replace(roadName.find("%2C"),3,",");
+  roadName.replace(roadName.find("%2C"),3,",");
+  std::cout << "[communication] roadname: " << roadName << std::endl;
+  //roadname and status
+  control->setRoadStatus(roadName, dataStr);
+
+  std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
 }
 
 void

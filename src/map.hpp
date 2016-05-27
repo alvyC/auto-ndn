@@ -39,6 +39,11 @@ public:
   bool
   addLink( std::string&, std::string&, int& );
 
+  std::vector<std::pair<std::string, int>>
+  getPath(){
+    return m_path;
+  }
+
 private:
   void
   readMap();
@@ -60,6 +65,7 @@ private:
   std::vector<std::pair<Edge, int>> edgeVector;
   Edge *edge_array;
   int *weights;
+  std::vector<std::pair<std::string, int>> m_path;
 };
 
 }

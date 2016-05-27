@@ -6,6 +6,7 @@
 #include <map>
 #include <ndn-cxx/util/scheduler.hpp>
 //#include "motion.hpp"
+#include "map.hpp"
 
 namespace autondn {
 
@@ -30,31 +31,20 @@ public:
     m_communication = comm;
   }
 
+  void
+  run();
+
 private:
   void
-  getDataFromSensor();
-
-  void
-  loadRoute();
-
-  void
   runPrimaryRoute();
-
-  void
-  runAlternateRoute();
-
-  // for broadcasting
-  void
-  passDecisionToCommunication();
 
   std::string
   constructRoadName( int& , int& , int& , int& ) const;
 
   void motionStub();
 
-public:
-  void
-  run();
+  int
+  getCoordinate(std::string s, int axis);
 
 private:
   std::vector<std::pair <int, int>> primary_route;
@@ -70,6 +60,9 @@ private:
 
   int m_prev_x, m_prev_y, m_current_x, m_current_y, m_next_x, m_next_y;
   //Motion m_motion;
+  Map m_map;
+  std::vector<std::pair<std::string, int>> m_path;
+  int m_roadTracker = 0;
 };
 
 } //end of namespace autondn

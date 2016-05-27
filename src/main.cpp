@@ -24,9 +24,9 @@ int main(/*int argc, char* argv[]*/){
     std::cerr << "Usage: " << argv[0] << " <carName>" << std::endl;
     return -1;
   }*/
-
+/*
   //std::string name = std::string(argv[1]);
-/*  ndn::Face face;
+  ndn::Face face;
 
   ndn::util::Scheduler scheduler(face.getIoService());
 
@@ -52,12 +52,12 @@ int main(/*int argc, char* argv[]*/){
     throw Error("Error in configuration file processing! Exiting from Autondn");
   }
 */
+
   autondn::Map my_map;
-  //my_map.processMap();
   std::string start = "1,1";
   std::string end = "4,4";
   my_map.calculatePath(start, end);
-
+std::cout<<std::endl;
   std::string n1 = "3,3";
   std::string n2 = "3,4";
   my_map.removeLink(n1, n2);

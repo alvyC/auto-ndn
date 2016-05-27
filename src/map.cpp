@@ -1,4 +1,5 @@
 #include "map.hpp"
+#include <unistd.h>
 
 namespace autondn{
 
@@ -94,21 +95,28 @@ Map::calculatePath(std::string& start, std::string& end) {
   dijkstra_shortest_paths(g, s, predecessor_map(&p[0]).distance_map(&d[0]));
   std::vector< graph_traits< graph_t >::vertex_descriptor > path;
 
-  graph_traits< graph_t >::vertex_descriptor current=vertex(endPt, g);
+  graph_traits< graph_t >::vertex_descriptor current = vertex(endPt, g);
 
-  //This will be inifinite loop if no path to the end
-  while(current!=s) {
+//  if(p[current] == p[p[current]]) {
+//    std::cout << "No path to end, check route_map file!" << std::endl;
+//    exit(0);
+//  }
+
+  //May result in infinite loop, if no route
+  while( current!=s ) {
     path.push_back(current);
-    current=p[current];
+    current = p[current];
+    usleep(1000);
   }
   path.push_back(s);
 
   std::vector< graph_traits< graph_t >::vertex_descriptor >::iterator it;
+  m_path.clear();
   for (it=path.end()-1; it != path.begin()-1; --it) {
-    std::cout << "--> (" << nodes.at(*it) << "-" << weights[*it] << ") ";
+    std::cout << "--> (" << nodes.at(*it) << ") " << std::endl;
+    std::cout << weights[*it] << "," << std::endl;
+    m_path.push_back(std::make_pair(nodes.at(*it), weights[*it]));
   }
-  std::cout << std::endl;
-  //HOW TO GET THE DIST? -WEIGHTS
 } //end of calculatePath
 
 int
