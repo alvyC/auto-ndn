@@ -21,7 +21,7 @@ def configure(conf):
 
     conf.check_boost(lib=boost_libs)
 
-    conf.env.append_value('INCLUDES', ['src/calibration', 'src/communication', 'src/control'])
+    conf.env.append_value('INCLUDES', ['src/calibration', 'src/communication', 'src/control', 'src/map'])
 
 def build(bld):
 

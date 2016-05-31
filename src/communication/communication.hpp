@@ -21,19 +21,19 @@ class Communication
 public:
   Communication( ndn::Face& face, Control* cont )
     : m_face(face)
-    , control(cont) 
+    , control(cont)
   {
     ndn::shared_ptr<ndn::ValidatorRegex> validator(new ndn::ValidatorRegex(m_face));
-    validator->addDataVerificationRule(ndn::make_shared<ndn::SecRuleRelative>("^(<>*)$", 
-                                                                              "^([^<KEY>]*)<KEY>(<>*)<ksk-.*><ID-CERT>$", 
+    validator->addDataVerificationRule(ndn::make_shared<ndn::SecRuleRelative>("^(<>*)$",
+                                                                              "^([^<KEY>]*)<KEY>(<>*)<ksk-.*><ID-CERT>$",
                                                                               ">", "\\1", "\\1\\2", true));
     m_rootIdentity = ndn::Name("autondn");
     //ndn::Name certificateName = m_keyChain.createIdentity(m_rootIdentity);
-    
+
     ndn::Name rootKeyName = m_keyChain.generateRsaKeyPair(m_rootIdentity);
     m_keyChain.setDefaultKeyNameForIdentity(rootKeyName);
     //ndn::Name rootCertName = m_keyChain.getDefaultCertificateNameForIdentity(m_rootIdentity);
-                                                          
+
     //ndn::shared_ptr<ndn::IdentityCertificate> rootAnchor = m_keyChain.getCertificate(rootCertName);
     ndn::shared_ptr<ndn::IdentityCertificate> rootAnchor = m_keyChain.selfSign(rootKeyName);
     m_validator = validator;

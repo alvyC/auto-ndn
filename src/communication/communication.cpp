@@ -1,4 +1,3 @@
-//#include "motion.h"
 #include "communication.hpp"
 #include "control.hpp"
 #include <unistd.h>
