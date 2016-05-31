@@ -89,18 +89,19 @@ Map::calculatePath(std::string& start, std::string& end) {
 
   std::vector<vertex_descriptor> p(num_vertices(g));
   std::vector<int> d(num_vertices(g));
-  //Start at node 0, may need to make it an input variable
+  //Start at node startPt, may need to make it an input variable
   vertex_descriptor s = vertex(startPt, g);
 
   dijkstra_shortest_paths(g, s, predecessor_map(&p[0]).distance_map(&d[0]));
+
+  //some deterence against infinite loop (which should not happen unless there is no path)
+  if(p.size() > 100000) {
+    std::cout << "No path to end, check route_map file!" << std::endl;
+    exit(0);
+  }
+
   std::vector< graph_traits< graph_t >::vertex_descriptor > path;
-
   graph_traits< graph_t >::vertex_descriptor current = vertex(endPt, g);
-
-//  if(p[current] == p[p[current]]) {
-//    std::cout << "No path to end, check route_map file!" << std::endl;
-//    exit(0);
-//  }
 
   //May result in infinite loop, if no route
   while( current!=s ) {

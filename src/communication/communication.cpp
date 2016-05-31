@@ -27,7 +27,8 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
     content = "No";
   }*/
   //Just a test for now
-  if(interest.getName().getSubName(1,1).toUri() == "/3%2C3-3%2C4p") {
+  if(interest.getName().getSubName(1,1).toUri() == "/3%2C3-3%2C4" ||
+     interest.getName().getSubName(1,1).toUri() == "/1%2C3-2%2C3" ) {
     content = "No";
   }
 

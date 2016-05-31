@@ -112,9 +112,11 @@ Control::runPrimaryRoute() {
       ++m_roadTracker;
     }
     else {
-      std::cout << "Changing route due to congestion on " << m_nextRoad << std::endl;
+      std::cout << "[control] Changing route due to congestion on " << m_currentRoad << std::endl;
+
+      std::cout << m_path[m_roadTracker].first << "," << m_path[m_roadTracker+1].first << std::endl;
       //Remove next road
-      m_map.removeLink(m_path[m_roadTracker+1].first, m_path[m_roadTracker+2].first);
+      m_map.removeLink(m_path[m_roadTracker].first, m_path[m_roadTracker+1].first);
       //Calculate dijkstra from next coordinate to final
       std::string end = "4,4";
       m_map.calculatePath(m_path[m_roadTracker].first, end);
