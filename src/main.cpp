@@ -47,20 +47,7 @@ int main(){
   }
 */
 
-/*
-  std::string confFileName = "auto-ndn.conf";
-  autondn::AutoNdn autoNdn(face, scheduler, control, communication);
-  autondn::ConfFileProcessor fileProcessor(autoNdn, confFileName);
-  if (fileProcessor.processConfFile()) {
-    autoNdn.run();
-  }
-  else {
-    throw Error("Error in configuration file processing! Exiting from Autondn");
-  }
-
-*/
-/*
-  map test - can convert later to unit test
+/*  map test - can convert later to unit test
   autondn::Map my_map;
   std::string start = "1,1";
   std::string end = "4,4";
@@ -70,7 +57,7 @@ int main(){
   std::string n1 = "3,3";
   std::string n2 = "3,4";
   my_map.removeLink(n1, n2);
-  my_map.calculatePath(n1, end); */
-
+  my_map.calculatePath(n1, end);
+*/
   return 0;
 }

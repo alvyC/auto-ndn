@@ -63,8 +63,8 @@ Map::processMap() {
 
 void
 Map::calculatePath(std::string& start, std::string& end) {
-  weights = new int[num_links];
-  edge_array = new Edge[num_links];
+  int *weights  = new int[num_links];
+  Edge *edge_array = new Edge[num_links];
 
   //int weights[num_links];
   //Edge edge_array[num_links];
@@ -118,6 +118,8 @@ Map::calculatePath(std::string& start, std::string& end) {
     std::cout << weights[*it] << "," << std::endl;
     m_path.push_back(std::make_pair(nodes.at(*it), weights[*it]));
   }
+  delete weights;
+  delete edge_array;
 } //end of calculatePath
 
 int

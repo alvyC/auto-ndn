@@ -22,8 +22,8 @@ public:
   }
 
   ~Map(){
-    delete edge_array;
-    delete weights;
+    //delete edge_array;
+    //delete weights;
   }
 
   void
@@ -63,8 +63,8 @@ private:
   std::vector<std::string> nodes, links;
 
   std::vector<std::pair<Edge, int>> edgeVector;
-  Edge *edge_array;
-  int *weights;
+  //Edge *edge_array;
+  //int *weights;
   std::vector<std::pair<std::string, int>> m_path;
 };
 
