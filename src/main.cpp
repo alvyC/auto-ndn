@@ -26,7 +26,7 @@ int main(){
   autondn::Communication *communication = new autondn::Communication(face, control);
   control->setCommunication(communication);
 
-  control->run();
+/*  control->run();
 
   try {
     communication->runProducer();
@@ -35,17 +35,18 @@ int main(){
     std::cerr << "ERROR: " << e.what() << std::endl;
   }
 
-/*
+*/
   std::string confFileName = "auto-ndn.conf";
   autondn::AutoNdn autoNdn(face, scheduler, control, communication);
   autondn::ConfFileProcessor fileProcessor(autoNdn, confFileName);
   if (fileProcessor.processConfFile()) {
-    autoNdn.run();
+    std::cout << "success" << std::endl;
+    //autoNdn.run();
   }
   else {
     throw Error("Error in configuration file processing! Exiting from Autondn");
   }
-*/
+//*/
 
 /*  map test - can convert later to unit test
   autondn::Map my_map;

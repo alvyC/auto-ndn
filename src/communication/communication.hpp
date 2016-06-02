@@ -27,16 +27,15 @@ public:
     validator->addDataVerificationRule(ndn::make_shared<ndn::SecRuleRelative>("^(<>*)$",
                                                                               "^([^<KEY>]*)<KEY>(<>*)<ksk-.*><ID-CERT>$",
                                                                               ">", "\\1", "\\1\\2", true));
-    m_rootIdentity = ndn::Name("autondn");
-    //ndn::Name certificateName = m_keyChain.createIdentity(m_rootIdentity);
-
-    ndn::Name rootKeyName = m_keyChain.generateRsaKeyPair(m_rootIdentity);
-    m_keyChain.setDefaultKeyNameForIdentity(rootKeyName);
-    //ndn::Name rootCertName = m_keyChain.getDefaultCertificateNameForIdentity(m_rootIdentity);
-
-    //ndn::shared_ptr<ndn::IdentityCertificate> rootAnchor = m_keyChain.getCertificate(rootCertName);
-    ndn::shared_ptr<ndn::IdentityCertificate> rootAnchor = m_keyChain.selfSign(rootKeyName);
     m_validator = validator;
+
+    m_rootIdentity = ndn::Name("autondn");
+
+    //generate ecdsa key pair and make it default
+    ndn::Name rootKeyName = m_keyChain.generateEcdsaKeyPairAsDefault(m_rootIdentity);
+
+    //self sign root key
+    ndn::shared_ptr<ndn::IdentityCertificate> rootAnchor = m_keyChain.selfSign(rootKeyName);
   };
 
   void
@@ -87,6 +86,9 @@ private:
   ndn::KeyChain m_keyChain;
   ndn::shared_ptr<ndn::Validator> m_validator;
   ndn::Name m_rootIdentity;
+
+  //security::CertificateStore m_certStore;
+
   //std::string m_decision;
 
   Control* control;
