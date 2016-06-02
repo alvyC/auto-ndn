@@ -8,6 +8,11 @@ def options(opt):
     opt.load(['compiler_cxx', 'gnu_dirs'])
     opt.load(['default-compiler-flags', 'boost'], tooldir=['.waf-tools'])
 
+    autondnopt = opt.add_option_group('Autondn Options')
+
+    autondnopt.add_option('--with-tests', action='store_true', default=False, dest='with_tests',
+                       help='''build unit tests''')
+
 def configure(conf):
     conf.load(['compiler_cxx', 'gnu_dirs',
                'default-compiler-flags', 'boost'])
@@ -18,6 +23,11 @@ def configure(conf):
     conf.check_cfg(package='libndn-cxx', args=['--cflags', '--libs'],
                    uselib_store='NDN_CXX', mandatory=True)
     boost_libs = 'system chrono program_options iostreams thread regex filesystem'
+
+    if conf.options.with_tests:
+        conf.env['WITH_TESTS'] = 1
+        conf.define('WITH_TESTS', 1);
+        boost_libs += ' unit_test_framework'
 
     conf.check_boost(lib=boost_libs)
 
@@ -43,3 +53,6 @@ def build(bld):
         use='autondn-objects',
         lib=['wiringPi']
         )
+
+    if bld.env['WITH_TESTS']:
+        bld.recurse('tests')
