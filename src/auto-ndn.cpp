@@ -9,6 +9,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler,
   , m_control(control)
   , m_communication(communication)
   , m_confParameter()
+  , m_validator(face)
   {
     m_control->setCommunication(communication);
   }

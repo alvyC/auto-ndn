@@ -9,7 +9,6 @@
 #include <ndn-cxx/security/key-chain.hpp>
 #include <ndn-cxx/security/validator-config.hpp>
 
-
 #include <boost/property_tree/ptree.hpp>
 #include <boost/cstdint.hpp>
 
@@ -65,7 +64,6 @@ private:
   Communication* m_communication;
   ConfParameter m_confParameter;
   ndn::ValidatorConfig m_validator;
-
   //ndn::KeyChain& m_keyChain;
 };
 
