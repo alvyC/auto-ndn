@@ -1,12 +1,12 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-from waflib import Utils
+from waflib import Utils, Build, Configure
 
 import os
 
 def options(opt):
     opt.load(['compiler_cxx', 'gnu_dirs'])
-    opt.load(['default-compiler-flags', 'boost'], tooldir=['.waf-tools'])
+    opt.load(['default-compiler-flags', 'coverage', 'boost'], tooldir=['.waf-tools'])
 
     autondnopt = opt.add_option_group('Autondn Options')
 
@@ -31,10 +31,9 @@ def configure(conf):
 
     conf.check_boost(lib=boost_libs)
 
-    conf.env.append_value('INCLUDES', ['src/calibration', 'src/communication', 'src/control', 'src/map'])
+    conf.load('coverage')
 
 def build(bld):
-
     autondn_objects = bld(
         target='autondn-objects',
         name='autondn-objects',
@@ -51,7 +50,7 @@ def build(bld):
         features='cxx cxxprogram',
         source='src/main.cpp',
         use='autondn-objects',
-        lib=['wiringPi']
+        lib=['wiringPi'],
         )
 
     if bld.env['WITH_TESTS']:

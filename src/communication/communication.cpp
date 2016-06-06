@@ -1,5 +1,5 @@
 #include "communication.hpp"
-#include "control.hpp"
+#include "control/control.hpp"
 #include <unistd.h>
 #include <ndn-cxx/security/signing-helpers.hpp>
 

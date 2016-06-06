@@ -1,13 +1,15 @@
+#include <ndn-cxx/name.hpp>
+#include <ndn-cxx/interest.hpp>
+#include <ndn-cxx/util/scheduler.hpp>
+
 #include "control.hpp"
+#include "communication/communication.hpp"
+
 #include <fstream>
 #include <string>
 #include <iostream>
-#include <ndn-cxx/name.hpp>
-#include <ndn-cxx/interest.hpp>
 #include <unistd.h>
 #include <pthread.h>
-#include "communication.hpp"
-#include <ndn-cxx/util/scheduler.hpp>
 
 namespace autondn {
 

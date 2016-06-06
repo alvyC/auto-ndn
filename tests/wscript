@@ -13,11 +13,10 @@ def build(bld):
 
         # autondn tests
         unit_tests_autondn = bld.program(
-            target='../unit-tests-auto-ndn',
+            target='../unit-tests-autondn',
             features='cxx cxxprogram',
             source=bld.path.ant_glob(['autondn/**/*.cpp']),
-            use='nlsr-objects unit-tests-main',
-            includes='.',
+            use='autondn-objects unit-tests-main',
             install_path=None,
-            lib=['wiringPi']
+            lib=['wiringPi'],
           )

@@ -3,10 +3,10 @@
 
 #include <vector>
 #include <string>
-#include <map>
+
 #include <ndn-cxx/util/scheduler.hpp>
 //#include "motion.hpp"
-#include "map.hpp"
+#include "map/map.hpp"
 
 namespace autondn {
 

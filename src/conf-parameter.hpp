@@ -55,6 +55,9 @@ public:
   ndn::Name&
   getCarName();
 
+  void
+  buildCarName();
+
 private:
     ndn::Name m_network;
     ndn::Name m_carMake;

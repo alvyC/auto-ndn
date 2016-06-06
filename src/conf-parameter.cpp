@@ -13,9 +13,13 @@ namespace autondn {
     std::cout << "Car ID: " << m_carId << std::endl;
   }
 
-  ndn::Name&
-  ConfParameter::getCarName() {
+  void
+  ConfParameter::buildCarName() {
     m_carName =  ndn::Name(m_carMake).append(m_carModel).append(m_carId);
+  }
+
+  ndn::Name&
+  ConfParameter::getCarName(){
     return m_carName;
   }
 

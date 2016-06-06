@@ -1,6 +1,6 @@
-#include "communication.hpp"
-#include "control.hpp"
-#include "map.hpp"
+#include "communication/communication.hpp"
+#include "control/control.hpp"
+#include "map/map.hpp"
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/util/scheduler.hpp>
 
