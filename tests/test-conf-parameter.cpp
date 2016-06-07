@@ -7,7 +7,7 @@ namespace test {
 
 using namespace std;
 
-BOOST_AUTO_TEST_SUITE(TestConfParameter)
+BOOST_AUTO_TEST_SUITE(TestConParameter)
 
 BOOST_AUTO_TEST_CASE(ConfParameterSettersAndGetters)
 {

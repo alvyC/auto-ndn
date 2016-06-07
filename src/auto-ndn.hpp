@@ -35,8 +35,8 @@ public:
     return m_communication;
   }
 
-  ConfParameter
-  getConfParameter() const {
+  ConfParameter&
+  getConfParameter() {
     return m_confParameter;
   }
 

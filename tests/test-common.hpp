@@ -1,9 +1,9 @@
 #ifndef AUTONDN_TEST_COMMON_HPP
 #define AUTONDN_TEST_COMMON_HPP
 
+#include "common.hpp"
 #include <boost/asio.hpp>
 
-#include <ndn-cxx/util/dummy-client-face.hpp>
 #include <ndn-cxx/util/scheduler.hpp>
 
 namespace autondn {
@@ -16,14 +16,13 @@ class BaseFixture
 {
 public:
   BaseFixture()
-    : t_scheduler(t_ioService)
+    : g_scheduler(g_ioService)
   {
   }
 
 protected:
-  shared_ptr<ndn::util::DummyClientFace> t_face;
-  ndn::Scheduler t_scheduler;
-  boost::asio::io_service t_ioService;
+  boost::asio::io_service g_ioService;
+  ndn::Scheduler g_scheduler;
 };
 
 } //end of namespace test
