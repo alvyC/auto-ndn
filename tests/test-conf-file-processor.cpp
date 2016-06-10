@@ -46,9 +46,8 @@ public:
     config.open("unit-test-auto-ndn.conf");
     config << confString;
     config.close();
-
-    ConfFileProcessor processor(autoNdn, CONFIG_FILE);
-    return processor.processConfFile();
+    
+    return fileProcessor.processConfFile();
   }
 
 private:
