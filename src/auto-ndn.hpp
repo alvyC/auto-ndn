@@ -8,11 +8,13 @@
 #include <ndn-cxx/util/scheduler.hpp>
 #include <ndn-cxx/security/key-chain.hpp>
 #include <ndn-cxx/security/validator-config.hpp>
+//#include <ndn-cxx/security/signing-info.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/cstdint.hpp>
 
 #include "conf-parameter.hpp"
+#include "security/certificate-store.hpp"
 
 namespace autondn {
 
@@ -55,7 +57,28 @@ public:
   }
 
   void
+  loadCertToPublish(ndn::shared_ptr<ndn::IdentityCertificate> certificate) {
+    m_certStore.insert(certificate);
+  }
+
+  const ndn::Name&
+  getDefaultCertName() {
+    return m_defaultCertName;
+  }
+
+  ndn::KeyChain&
+  getKeyChain() {
+    return m_keyChain;
+  }
+
+  
+
+private:
+  void
   initializeKey();
+
+  void
+  initialize();
 
 private:
   ndn::Face& m_face;
@@ -64,7 +87,10 @@ private:
   Communication* m_communication;
   ConfParameter m_confParameter;
   ndn::ValidatorConfig m_validator;
-  //ndn::KeyChain& m_keyChain;
+  ndn::KeyChain m_keyChain;
+  ndn::security::SigningInfo m_signingInfo;
+  ndn::Name m_defaultCertName;
+  security::CertificateStore m_certStore;
 };
 
 } // end of namespace autondn
