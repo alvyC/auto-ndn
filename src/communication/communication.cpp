@@ -36,8 +36,8 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   data->setFreshnessPeriod(ndn::time::seconds(10));
   data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
 
-  m_keyChain.sign(*data, ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID,
-                                                    m_rootIdentity));
+  m_keyChain.sign(*data);/*, ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID,
+                                                    m_rootIdentity));*/
   m_face.put(*data);
 }
 
