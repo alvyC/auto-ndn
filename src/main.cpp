@@ -16,7 +16,7 @@ public:
   }
 };
 
-int main(){
+int main() {
 
   ndn::Face face;
 
