@@ -46,14 +46,14 @@ Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
   // for debugging
   std::string dataStr(reinterpret_cast<const char*>(data.getContent().value()), data.getContent().value_size());
 
-  //m_decision = dataStr;
+  // m_decision = dataStr;
 
   std::string roadName = (data.getName().getSubName(1, 1)).toUri();
   roadName = roadName.substr(1, roadName.length()-1);
   roadName.replace(roadName.find("%2C"),3,",");
   roadName.replace(roadName.find("%2C"),3,",");
   std::cout << "[communication] roadname: " << roadName << std::endl;
-  //roadname and status
+  // roadname and status
   control->setRoadStatus(roadName, dataStr);
 
   std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
