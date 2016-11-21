@@ -50,7 +50,7 @@ def build(bld):
         features='cxx cxxprogram',
         source='src/main.cpp',
         use='autondn-objects',
-        lib=['wiringPi'],
+        #lib=['wiringPi'],
         )
 
     if bld.env['WITH_TESTS']:
