@@ -18,5 +18,5 @@ def build(bld):
             source=bld.path.ant_glob(['autondn/**/*.cpp']),
             use='autondn-objects unit-tests-main',
             install_path=None,
-            lib=['wiringPi'],
+            #lib=['wiringPi'],
           )

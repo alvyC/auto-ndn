@@ -3,7 +3,7 @@
 
 namespace autondn {
 
-namespace test {
+namespace tests {
 
 BOOST_AUTO_TEST_SUITE(TestMap)
 
