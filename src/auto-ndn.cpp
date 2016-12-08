@@ -1,5 +1,4 @@
 #include <ndn-cxx/util/time.hpp>
-#include <ndn-cxx/security/certificate-subject-description.hpp>
 
 #include "auto-ndn.hpp"
 
@@ -69,6 +68,6 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler,
   void
   AutoNdn::initialize() {
     m_confParameter.buildCarName();
-    initializeKey();
+    //initializeKey();
   }
 } // end of namespace autondn

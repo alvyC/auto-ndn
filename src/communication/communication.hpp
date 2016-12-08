@@ -19,7 +19,7 @@ class Control;
 class Communication
 {
 public:
-  Communication( ndn::Face& face, Control* cont )
+  Communication( ndn::Face& face, Control* cont)
     : m_face(face)
     , control(cont)
   {
