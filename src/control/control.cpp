@@ -26,8 +26,8 @@ Control::Control( ndn::util::Scheduler& sched )
   //Mark the first road accessible
   roadStatusMap[m_currentRoad] = "Yes";
 
-  m_prev_x = getCoordinate(m_path[0].first, 0);
-  m_prev_y = getCoordinate(m_path[0].first, 1);
+  m_prev_x = getCoordinate(m_path[0].first, 0); // get the x coordinate
+  m_prev_y = getCoordinate(m_path[0].first, 1); // get the y coordinate
   //std::cout << m_prev_x << " " <<m_prev_y << std::endl;
 }
 

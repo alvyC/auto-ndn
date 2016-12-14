@@ -55,7 +55,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler,
     certificate->setNotAfter(ndn::time::system_clock::now() + ndn::time::days(7300)); // ~20 years
     certificate->setPublicKeyInfo(*pubKey);
     certificate->addSubjectDescription(ndn::CertificateSubjectDescription(ndn::oid::ATTRIBUTE_NAME,
-                                                        keyName.toUri()));
+                                       keyName.toUri()));
     certificate->encode();
     //m_keyChain.signByIdentity(*certificate, m_confParam.getManufacturerPrefix());
 
