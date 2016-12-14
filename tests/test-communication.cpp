@@ -35,7 +35,7 @@ BOOST_FIXTURE_TEST_SUITE(TestCommunication, CommunicationFixture)
 
 BOOST_AUTO_TEST_CASE(Basic) {
   // here
-  autondn.run();
+  communication.runProducer();
   ndn::Interest interest("/autondn/1%2C2-1%2C3");
   face->receive(interest);
   face->processEvents(ndn::time::milliseconds(10));
