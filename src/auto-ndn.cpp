@@ -31,9 +31,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler,
 
   void
   AutoNdn::initializeKey() {
-    ndn::Name defaultIdentity = m_confParameter.getNetwork();
-    defaultIdentity.append(m_confParameter.getCarName());
-    defaultIdentity.append("autondn-app");
+    ndn::Name defaultIdentity = m_confParameter.getCarName();
 
     try {
       m_keyChain.deleteIdentity(defaultIdentity);
@@ -43,8 +41,9 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler,
 
     m_signingInfo = ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID, defaultIdentity);
     ndn::Name keyName = m_keyChain.generateRsaKeyPairAsDefault(defaultIdentity, true);
+    /*keyname*/ std::cout << keyName.toUri() << std::endl;
     ndn::shared_ptr<ndn::IdentityCertificate> certificate =
-      ndn::make_shared<ndn::IdentityCertificate>();
+                                              ndn::make_shared<ndn::IdentityCertificate>();
     ndn::shared_ptr<ndn::PublicKey> pubKey = m_keyChain.getPublicKey(keyName);
 
     ndn::Name certificateName = keyName.getPrefix(-1);
