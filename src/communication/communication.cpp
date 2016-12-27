@@ -1,5 +1,6 @@
 #include "communication.hpp"
 #include "control/control.hpp"
+#include "auto-ndn.hpp"
 #include <unistd.h>
 #include <ndn-cxx/security/signing-helpers.hpp>
 
@@ -36,7 +37,7 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   data->setFreshnessPeriod(ndn::time::seconds(10));
   data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
 
-  /*m_keyChain.sign(*data);*/
+  m_keyChain.sign(*data);
   /* ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID,
                                                     m_rootIdentity));*/
   m_face.put(*data);
@@ -44,20 +45,40 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
 
 void
 Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
-  // for debugging
+
+  if (data.getSignature().hasKeyLocator()) {
+    if (data.getSignature().getKeyLocator().getType() == ndn::KeyLocator::KeyLocator_Name) {
+      std::cout << "Data is signed with " << data.getSignature().getKeyLocator().getName() << std::endl;
+    }
+  }
+
+  /*m_autondn.getValidator().validate(data,
+                                    ndn::bind(&Communication::onDataValidated, this, _1),
+                                    ndn::bind(&Communication::onValidationFailed, this, _1));*/
+
+  m_autondn.getValidator().validate(data,
+                                    [] (const shared_ptr<const ndn::Data>&) { return true; },
+                                    [] (const shared_ptr<const ndn::Data>&, const std::string&) { return false; });
+}
+
+void
+Communication::onDataValidated(const ndn::Data& data) {
   std::string dataStr(reinterpret_cast<const char*>(data.getContent().value()), data.getContent().value_size());
-
   // m_decision = dataStr;
-
   std::string roadName = (data.getName().getSubName(1, 1)).toUri();
   roadName = roadName.substr(1, roadName.length()-1);
   roadName.replace(roadName.find("%2C"),3,",");
   roadName.replace(roadName.find("%2C"),3,",");
   std::cout << "[communication] roadname: " << roadName << std::endl;
   // roadname and status
-  control->setRoadStatus(roadName, dataStr);
+  control.setRoadStatus(roadName, dataStr);
 
-  std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
+  //std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
+}
+
+void
+Communication::onValidationFailed(const ndn::Data& data) {
+  std::cout << "Validation falied." << std::endl;
 }
 
 void
@@ -67,7 +88,6 @@ Communication::sendInterest(const ndn::Interest& interest) {
   m_face.expressInterest(interest,
                          bind(&Communication::onData, this, _1, _2),
                          bind(&Communication::onTimeout, this, _1));
-
 
   std::cout << "[communication] sending interest for: " << interest.toUri() << std::endl;
 }
@@ -96,27 +116,6 @@ Communication::onRegisterFailed(const ndn::Name& prefix, const std::string& reas
 void
 Communication::onTimeout(const ndn::Interest& interest) {
   std::cout << "Timeout " << interest << std::endl;
-}
-
-void
-Communication::onValidated(const ndn::shared_ptr<const ndn::Data>& data) {
-  // decode data
-  // pass to control module
-
-  std::string dataStr(reinterpret_cast<const char*>(data->getContent().value()), data->getContent().value_size());
-  //m_decision = dataStr;
-
-  std::string roadName = data->getName().getSubName(1, 1).toUri();
-  roadName = roadName.substr(1, 4);
-  std::cout << "[communication] roadname: " << roadName << std::endl;
-  //roadname and status
-  control->setRoadStatus(roadName, dataStr);
-  std::cout << "Data: " << dataStr << " validated." << std::endl;
-}
-
-void
-Communication::onValidationFailed(const ndn::shared_ptr<const ndn::Data>& data, const std::string& failinfo) {
-
 }
 
 /*

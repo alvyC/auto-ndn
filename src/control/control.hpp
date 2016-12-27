@@ -15,21 +15,25 @@ class Communication;
 class Control {
 
 public:
-  Control( ndn::util::Scheduler& );
+  Control(ndn::util::Scheduler&, Communication&);
 
   std::string
-  getNextRoad() const { return m_nextRoad; }
-
-  std::string
-  getCurrentRoad() const { return m_currentRoad; }
-
-  void
-  setRoadStatus( std::string& road, std::string& decision );
-
-  void
-  setCommunication(Communication* comm) {
-    m_communication = comm;
+  getNextRoad() const {
+    return m_nextRoad;
   }
+
+  std::string
+  getCurrentRoad() const {
+    return m_currentRoad;
+  }
+
+  void
+  setRoadStatus(std::string& road, std::string& decision);
+
+  // void
+  // setCommunication(Communication& comm) {
+  //   m_communication = comm;
+  // }
 
   void
   run();
@@ -39,7 +43,7 @@ private:
   runPrimaryRoute();
 
   std::string
-  constructRoadName( int& , int& , int& , int& ) const;
+  constructRoadName(int& , int& , int& , int&) const;
 
   void motionStub();
 
@@ -53,7 +57,7 @@ private:
   std::string m_currentRoad;
   std::string m_nextRoad;
   std::map< std::string, std::string > roadStatusMap;
-  Communication* m_communication;
+  Communication& m_communication;
   ndn::util::Scheduler& m_scheduler;
   bool m_isMotionDone = false;
   std::vector<std::pair <int, int>>::iterator m_it, m_alter_it;

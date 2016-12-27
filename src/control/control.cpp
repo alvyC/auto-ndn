@@ -13,8 +13,9 @@
 
 namespace autondn {
 
-Control::Control( ndn::util::Scheduler& sched )
+Control::Control( ndn::util::Scheduler& sched, Communication& comm)
   : m_scheduler(sched)
+  , m_communication(comm)
 {
   std::string start = "1,1";
   std::string end = "4,4";

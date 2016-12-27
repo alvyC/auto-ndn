@@ -15,15 +15,17 @@
 namespace autondn {
 
 class Control;
+class AutoNdn;
 
 class Communication
 {
 public:
-  Communication( ndn::Face& face, Control* cont)
-    : m_face(face)
+  Communication(AutoNdn& autondn, ndn::Face& face, Control& cont)
+    : m_autondn(autondn)
+    , m_face(face)
     , control(cont)
   {
-    ndn::shared_ptr<ndn::ValidatorRegex> validator(new ndn::ValidatorRegex(m_face));
+    /*ndn::shared_ptr<ndn::ValidatorRegex> validator(new ndn::ValidatorRegex(m_face));
     validator->addDataVerificationRule(ndn::make_shared<ndn::SecRuleRelative>("^(<>*)$",
                                                                               "^([^<KEY>]*)<KEY>(<>*)<ksk-.*><ID-CERT>$",
                                                                               ">", "\\1", "\\1\\2", true));
@@ -35,8 +37,8 @@ public:
     ndn::Name rootKeyName = m_keyChain.generateEcdsaKeyPairAsDefault(m_rootIdentity);
 
     //self sign root key
-    ndn::shared_ptr<ndn::IdentityCertificate> rootAnchor = m_keyChain.selfSign(rootKeyName);
-  };
+    ndn::shared_ptr<ndn::IdentityCertificate> rootAnchor = m_keyChain.selfSign(rootKeyName);*/
+  }
 
   void
   onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest);
@@ -60,10 +62,10 @@ public:
   sendData(const ndn::Data& data);
 
   void
-  onValidated(const ndn::shared_ptr<const ndn::Data>& data);
+  onDataValidated(const ndn::Data& data);
 
   void
-  onValidationFailed(const ndn::shared_ptr<const ndn::Data>& data, const std::string& failinfo);
+  onValidationFailed(const ndn::Data& data);
 
   /*std::string
   getDecision() const {
@@ -82,16 +84,15 @@ public:
   run();*/
 
 private:
-  ndn::Face& m_face;
-  ndn::KeyChain m_keyChain;
-  ndn::shared_ptr<ndn::Validator> m_validator;
-  ndn::Name m_rootIdentity;
-
   //security::CertificateStore m_certStore;
 
   //std::string m_decision;
+  AutoNdn& m_autondn;
+  ndn::Face& m_face;
+  Control& control;
 
-  Control* control;
+
+  ndn::KeyChain m_keyChain;
   //std::string m_nextRoad;
   //bool m_interestSent = false;
   //std::string m_carName;
