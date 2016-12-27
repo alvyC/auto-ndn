@@ -4,25 +4,23 @@
 
 namespace autondn {
 
-AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler,
-                               Control* control, Communication* communication)
+AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   : m_face(face)
   , m_scheduler(scheduler)
-  , m_control(control)
-  , m_communication(communication)
+  , m_control(scheduler, m_communication)
+  , m_communication(*this, m_face, m_control)
   , m_confParameter()
-  , m_validator(face)
+  , m_validator(m_face)
   {
-    m_control->setCommunication(communication);
   }
 
   void
   AutoNdn::run() {
     initialize();
-    m_control->run();
+    m_control.run();
 
     try {
-      m_communication->runProducer();
+      m_communication.runProducer();
     }
     catch (const std::exception& e) {
       std::cerr << "Error: " << e.what() << std::endl;

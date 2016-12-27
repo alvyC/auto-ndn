@@ -20,20 +20,20 @@ namespace autondn {
 
 class AutoNdn {
 public:
-  AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler, Control* control, Communication* communication);
+  AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler);
 
   ndn::Face&
-  getFace() const {
+  getFace() {
     return m_face;
   }
 
-  Control*
-  getControl() const {
+  Control&
+  getControl() {
     return m_control;
   }
 
-  Communication*
-  getCommunication() const {
+  Communication&
+  getCommunication() {
     return m_communication;
   }
 
@@ -71,7 +71,7 @@ public:
     return m_keyChain;
   }
 
-  
+
 
 private:
   void
@@ -83,8 +83,8 @@ private:
 private:
   ndn::Face& m_face;
   ndn::Scheduler& m_scheduler;
-  Control* m_control;
-  Communication* m_communication;
+  Control m_control;
+  Communication m_communication;
   ConfParameter m_confParameter;
   ndn::ValidatorConfig m_validator;
   ndn::KeyChain m_keyChain;

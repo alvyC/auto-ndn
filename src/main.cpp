@@ -18,16 +18,18 @@ public:
 
 int main() {
 
-  ndn::Face face;
+  boost::asio::io_service ioService;
+
+  ndn::Face face(ioService);
 
   ndn::util::Scheduler scheduler(face.getIoService());
 
-  autondn::Control *control = new autondn::Control(scheduler);
-  autondn::Communication *communication = new autondn::Communication(face, control);
+  //autondn::Control *control = new autondn::Control(scheduler);
+  //autondn::Communication *communication = new autondn::Communication(face, control);
   //control->setCommunication(communication);
 
   std::string confFileName = "auto-ndn.conf";
-  autondn::AutoNdn autoNdn(face, scheduler, control, communication);
+  autondn::AutoNdn autoNdn(face, scheduler);
   autondn::ConfFileProcessor fileProcessor(autoNdn, confFileName);
   if (fileProcessor.processConfFile()) {
     std::cout << "success" << std::endl;
