@@ -74,6 +74,7 @@ Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
   std::string dataStr(reinterpret_cast<const char*>(data->getContent().value()), data->getContent().value_size());
   // m_decision = dataStr;
   std::string roadName = (data->getName().getSubName(1, 1)).toUri();
+
   roadName = roadName.substr(1, roadName.length()-1);
   roadName.replace(roadName.find("%2C"),3,",");
   roadName.replace(roadName.find("%2C"),3,",");
@@ -87,6 +88,7 @@ Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
 void
 Communication::onValidationFailed(const std::shared_ptr<const ndn::Data>& data, const std::string& msg) {
   std::cout << "Validation falied." << std::endl;
+
 }
 
 void

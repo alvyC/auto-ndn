@@ -66,6 +66,7 @@ public:
   void
   onValidationFailed(const std::shared_ptr<const ndn::Data>&, const std::string&);
 
+
   /*std::string
   getDecision() const {
     return m_decision;
