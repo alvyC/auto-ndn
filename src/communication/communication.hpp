@@ -3,9 +3,8 @@
 
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/security/key-chain.hpp>
-#include <ndn-cxx/security/validator.hpp>
-#include <ndn-cxx/security/validator-regex.hpp>
-#include <ndn-cxx/security/sec-rule-relative.hpp>
+// #include <ndn-cxx/security/validator-regex.hpp>
+// #include <ndn-cxx/security/sec-rule-relative.hpp>
 #include <ndn-cxx/util/time.hpp>
 #include <ndn-cxx/util/scheduler.hpp>
 
@@ -62,10 +61,10 @@ public:
   sendData(const ndn::Data& data);
 
   void
-  onDataValidated(const ndn::Data& data);
+  onDataValidated(const std::shared_ptr<const ndn::Data>&);
 
   void
-  onValidationFailed(const ndn::Data& data);
+  onValidationFailed(const std::shared_ptr<const ndn::Data>&, const std::string&);
 
   /*std::string
   getDecision() const {

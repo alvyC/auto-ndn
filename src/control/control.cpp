@@ -75,7 +75,7 @@ Control::runPrimaryRoute() {
       ndn::Name interestName("/autondn");
       interestName.append(m_nextRoad);
 
-      m_communication->sendInterest( ndn::Interest(interestName) );
+      m_communication.sendInterest( ndn::Interest(interestName) );
     }
 
     std::cout << "[control] " << m_currentRoad << ": " << roadStatusMap[m_currentRoad] << std::endl;

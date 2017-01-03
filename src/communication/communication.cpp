@@ -3,6 +3,7 @@
 #include "auto-ndn.hpp"
 #include <unistd.h>
 #include <ndn-cxx/security/signing-helpers.hpp>
+#include <ndn-cxx/security/validator-config.hpp>
 
 namespace autondn {
 
@@ -44,6 +45,17 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
 }
 
 void
+Communication::sendInterest(const ndn::Interest& interest) {
+  // sends interest
+  // schedule interest
+  m_face.expressInterest(interest,
+                         bind(&Communication::onData, this, _1, _2),
+                         bind(&Communication::onTimeout, this, _1));
+
+  std::cout << "[communication] sending interest for: " << interest.toUri() << std::endl;
+}
+
+void
 Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
 
   if (data.getSignature().hasKeyLocator()) {
@@ -52,20 +64,16 @@ Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
     }
   }
 
-  /*m_autondn.getValidator().validate(data,
-                                    ndn::bind(&Communication::onDataValidated, this, _1),
-                                    ndn::bind(&Communication::onValidationFailed, this, _1));*/
-
   m_autondn.getValidator().validate(data,
-                                    [] (const shared_ptr<const ndn::Data>&) { return true; },
-                                    [] (const shared_ptr<const ndn::Data>&, const std::string&) { return false; });
+                                    ndn::bind(&Communication::onDataValidated, this, _1),
+                                    ndn::bind(&Communication::onValidationFailed, this, _1, _2));
 }
 
 void
-Communication::onDataValidated(const ndn::Data& data) {
-  std::string dataStr(reinterpret_cast<const char*>(data.getContent().value()), data.getContent().value_size());
+Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
+  std::string dataStr(reinterpret_cast<const char*>(data->getContent().value()), data->getContent().value_size());
   // m_decision = dataStr;
-  std::string roadName = (data.getName().getSubName(1, 1)).toUri();
+  std::string roadName = (data->getName().getSubName(1, 1)).toUri();
   roadName = roadName.substr(1, roadName.length()-1);
   roadName.replace(roadName.find("%2C"),3,",");
   roadName.replace(roadName.find("%2C"),3,",");
@@ -77,19 +85,8 @@ Communication::onDataValidated(const ndn::Data& data) {
 }
 
 void
-Communication::onValidationFailed(const ndn::Data& data) {
+Communication::onValidationFailed(const std::shared_ptr<const ndn::Data>& data, const std::string& msg) {
   std::cout << "Validation falied." << std::endl;
-}
-
-void
-Communication::sendInterest(const ndn::Interest& interest) {
-  // sends interest
-  // schedule interest
-  m_face.expressInterest(interest,
-                         bind(&Communication::onData, this, _1, _2),
-                         bind(&Communication::onTimeout, this, _1));
-
-  std::cout << "[communication] sending interest for: " << interest.toUri() << std::endl;
 }
 
 void
