@@ -11,6 +11,8 @@
 //#include "motion.h"
 //#include "control.hpp"
 
+#include "conf-parameter.hpp"
+
 namespace autondn {
 
 class Control;
@@ -19,25 +21,7 @@ class AutoNdn;
 class Communication
 {
 public:
-  Communication(AutoNdn& autondn, ndn::Face& face, Control& cont)
-    : m_autondn(autondn)
-    , m_face(face)
-    , control(cont)
-  {
-    /*ndn::shared_ptr<ndn::ValidatorRegex> validator(new ndn::ValidatorRegex(m_face));
-    validator->addDataVerificationRule(ndn::make_shared<ndn::SecRuleRelative>("^(<>*)$",
-                                                                              "^([^<KEY>]*)<KEY>(<>*)<ksk-.*><ID-CERT>$",
-                                                                              ">", "\\1", "\\1\\2", true));
-    m_validator = validator;
-
-    m_rootIdentity = ndn::Name("autondn");
-
-    //generate ecdsa key pair and make it default
-    ndn::Name rootKeyName = m_keyChain.generateEcdsaKeyPairAsDefault(m_rootIdentity);
-
-    //self sign root key
-    ndn::shared_ptr<ndn::IdentityCertificate> rootAnchor = m_keyChain.selfSign(rootKeyName);*/
-  }
+  Communication(AutoNdn&, ndn::Face&, Control&);
 
   void
   onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest);
@@ -90,7 +74,7 @@ private:
   AutoNdn& m_autondn;
   ndn::Face& m_face;
   Control& control;
-
+  ConfParameter& m_confParam;
 
   ndn::KeyChain m_keyChain;
   //std::string m_nextRoad;

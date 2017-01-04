@@ -4,8 +4,17 @@
 #include <unistd.h>
 #include <ndn-cxx/security/signing-helpers.hpp>
 #include <ndn-cxx/security/validator-config.hpp>
+#include <ndn-cxx/util/time.hpp>
 
 namespace autondn {
+
+Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont)
+    : m_autondn(autondn)
+    , m_face(face)
+    , control(cont)
+    , m_confParam(m_autondn.getConfParameter())
+  {
+  }
 
 void
 Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest) {
@@ -18,7 +27,15 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
 
   // respond with the road status
   std::cout << "[communication] interest received for: " << interest.toUri() <<  std::endl;
-  ndn::Name dataName(interest.getName());
+  ndn::Name dataName(interest.getName().get(0));
+  dataName.append("road-status");
+  dataName.append(interest.getName().getSubName(1, interest.getName().size()));
+  dataName.append("%V1.Vehicle");
+
+  const ndn::time::system_clock::TimePoint tp = ndn::time::system_clock::now();
+  dataName.appendTimestamp(tp);
+
+  dataName.append(m_confParam.getCarName());
 
   std::string content = "Yes";
   /*/80% of the time answer Yes, that is road is plyable
