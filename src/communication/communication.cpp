@@ -8,11 +8,12 @@
 
 namespace autondn {
 
-Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont)
+Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, ndn::KeyChain& keyChain)
     : m_autondn(autondn)
     , m_face(face)
     , control(cont)
     , m_confParam(m_autondn.getConfParameter())
+    , m_keyChain(keyChain)
   {
   }
 

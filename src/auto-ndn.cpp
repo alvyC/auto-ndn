@@ -8,7 +8,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   : m_face(face)
   , m_scheduler(scheduler)
   , m_control(scheduler, m_communication)
-  , m_communication(*this, m_face, m_control)
+  , m_communication(*this, m_face, m_control, m_keyChain)
   , m_confParameter()
   , m_validator(m_face)
   {

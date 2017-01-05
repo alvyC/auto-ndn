@@ -21,7 +21,7 @@ class AutoNdn;
 class Communication
 {
 public:
-  Communication(AutoNdn&, ndn::Face&, Control&);
+  Communication(AutoNdn&, ndn::Face&, Control&, ndn::KeyChain&);
 
   void
   onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest);
@@ -76,7 +76,7 @@ private:
   Control& control;
   ConfParameter& m_confParam;
 
-  ndn::KeyChain m_keyChain;
+  ndn::KeyChain& m_keyChain;
   //std::string m_nextRoad;
   //bool m_interestSent = false;
   //std::string m_carName;
