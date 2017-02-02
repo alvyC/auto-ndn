@@ -27,7 +27,7 @@ int main() {
   //autondn::Control *control = new autondn::Control(scheduler);
   //autondn::Communication *communication = new autondn::Communication(face, control);
   //control->setCommunication(communication);
-
+  std::cout << "In the main()" << std::endl;
   std::string confFileName = "auto-ndn.conf";
   autondn::AutoNdn autoNdn(face, scheduler);
   autondn::ConfFileProcessor fileProcessor(autoNdn, confFileName);
