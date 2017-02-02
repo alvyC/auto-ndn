@@ -30,19 +30,19 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
 
   void
   AutoNdn::initializeKey() {
-    ndn::Name defaultIdentity = m_confParameter.getCarName();
+    /*ndn::Name defaultIdentity = m_confParameter.getCarName();
     //ndn::Name defaultIdentity = "/test";
-    std::cout << "Default Indentity: " << defaultIdentity << std::endl;
+    std::cout << "Default Identity: " << defaultIdentity << std::endl;
     try {
       m_keyChain.deleteIdentity(defaultIdentity);
     }
-    catch (std::exception& e) {
+      catch (std::exception& e) {
     }
 
     m_signingInfo = ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID, defaultIdentity);
     ndn::Name keyName = m_keyChain.generateRsaKeyPairAsDefault(defaultIdentity, true);
     /*keyname*/ std::cout << "Keyname: " << keyName.toUri() << std::endl;
-    ndn::shared_ptr<ndn::IdentityCertificate> certificate =
+    /*ndn::shared_ptr<ndn::IdentityCertificate> certificate =
                                               ndn::make_shared<ndn::IdentityCertificate>();
     ndn::shared_ptr<ndn::PublicKey> pubKey = m_keyChain.getPublicKey(keyName);
 
@@ -61,13 +61,15 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     m_keyChain.addCertificateAsIdentityDefault(*certificate);
     loadCertToPublish(certificate);
 
-    m_defaultCertName = certificate->getName();
+    m_defaultCertName = certificate->getName();*/
+
+    m_keyChain.addIdentity(m_confParameter.getCarName());
   }
 
   void
   AutoNdn::initialize() {
     m_confParameter.buildCarName();
-    std::cout << m_confParameter.getCarName() << std::endl; 
+    std::cout << m_confParameter.getCarName() << std::endl;
     initializeKey();
   }
 } // end of namespace autondn

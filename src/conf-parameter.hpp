@@ -20,16 +20,6 @@ public:
   }
 
   void
-  setCarModel(ndn::Name carModel) {
-    m_carModel = carModel;
-  }
-
-  const ndn::Name&
-  getCarModel() const {
-    return m_carModel;
-  }
-
-  void
   setCarMake(ndn::Name carMake) {
     m_carMake = carMake;
   }
@@ -61,7 +51,6 @@ public:
 private:
     ndn::Name m_network;
     ndn::Name m_carMake;
-    ndn::Name m_carModel;
     ndn::Name m_carId;
     ndn::Name m_carName;
 };

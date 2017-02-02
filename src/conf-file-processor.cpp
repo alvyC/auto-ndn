@@ -77,7 +77,6 @@ ConfFileProcessor::processSectionGeneral(const ConfigSection& section) {
   try {
     string network = section.get<string>("network");
     string make = section.get<string>("make");
-    string model = section.get<string>("model");
     string id = section.get<string>("id");
 
     ndn::Name networkName(network);
@@ -94,14 +93,6 @@ ConfFileProcessor::processSectionGeneral(const ConfigSection& section) {
     }
     else {
       cerr << "Make name cannot be empty" << endl;
-    }
-
-    ndn::Name modelName(model);
-    if (!modelName.empty()) {
-      m_autondn.getConfParameter().setCarModel(modelName);
-    }
-    else {
-      cerr << "Model name cannot be empty" << endl;
     }
 
     ndn::Name idName(id);
