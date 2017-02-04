@@ -97,7 +97,7 @@ ConfFileProcessor::processSectionGeneral(const ConfigSection& section) {
 
     ndn::Name idName(id);
     if (!idName.empty()) {
-      // set the id name in confparameter
+      // set the id name in conf-parameter
       m_autondn.getConfParameter().setCarId(idName);
     }
     else {

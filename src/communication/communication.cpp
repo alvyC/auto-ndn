@@ -28,19 +28,17 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
 
   // respond with the road status
   std::cout << "[in-communication] interest received for: " << interest.toUri() <<  std::endl;
-  ndn::Name dataName("/autondn");
+  ndn::Name dataName = interest.getName();
   std::cout << dataName.toUri() << std::endl;
-  dataName.append("road-status");
-  std::cout << "Name of the data: " << dataName.toUri() << std::endl;
-  dataName.append(interest.getName().getSubName(1, interest.getName().size()));
-  std::cout << "Name of the data: " << dataName.toUri() << std::endl;
+  //dataName.append("road-status");
+  //dataName.append(interest.getName().getSubName(1, interest.getName().size()));
   dataName.append("V1.Vehicle");
+  dataName.append(m_confParam.getCarName());
   std::cout << "Name of the data: " << dataName.toUri() << std::endl;
   const ndn::time::system_clock::TimePoint tp = ndn::time::system_clock::now();
   dataName.appendTimestamp(tp);
   std::cout << "Name of the data: " << dataName.toUri() << std::endl;
-  dataName.append(m_confParam.getCarName());
-  std::cout << "Name of the data: " << dataName.toUri() << std::endl;
+
   std::string content = "Yes";
   /*/80% of the time answer Yes, that is road is plyable
   if( rand() % 100 < 80 ) {
@@ -53,7 +51,7 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
      interest.getName().getSubName(1,1).toUri() == "/1%2C3-2%2C3" ) {
     content = "No";
   }
-  
+
   std::shared_ptr<ndn::Data> data = ndn::make_shared<ndn::Data>();
   data->setName(dataName);
   data->setFreshnessPeriod(ndn::time::seconds(10));
@@ -78,7 +76,7 @@ Communication::sendInterest(const ndn::Interest& interest) {
 
 void
 Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
-  std::cout << "[communicaton] Got data: " << data.getName() << std::endl;
+  std::cout << "[communication] Got data: " << data.getName() << std::endl;
   if (data.getSignature().hasKeyLocator()) {
     if (data.getSignature().getKeyLocator().getType() == ndn::KeyLocator::KeyLocator_Name) {
       std::cout << "Data is signed with " << data.getSignature().getKeyLocator().getName() << std::endl;
@@ -100,7 +98,7 @@ Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
   roadName.replace(roadName.find("%2C"),3,",");
   roadName.replace(roadName.find("%2C"),3,",");
   std::cout << "[communication] roadname: " << roadName << std::endl;
-  // roadname and status
+  // road-name and status
   control.setRoadStatus(roadName, dataStr);
 
   //std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
@@ -108,7 +106,7 @@ Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
 
 void
 Communication::onValidationFailed(const std::shared_ptr<const ndn::Data>& data, const std::string& msg) {
-  std::cout << "Validation falied." << std::endl;
+  std::cout << "Validation failed." << std::endl;
 
 }
 
@@ -116,7 +114,7 @@ void
 Communication::runProducer()
 {
   std::cout << "[communication] Starting producer" << std::endl;
-  m_face.setInterestFilter(ndn::InterestFilter("/autondn"),
+  m_face.setInterestFilter(ndn::InterestFilter("/autondn/road-status"),
                            bind(&Communication::onInterest, this, _1, _2),
                            ndn::RegisterPrefixSuccessCallback(),
                            bind(&Communication::onRegisterFailed, this, _1, _2) );
