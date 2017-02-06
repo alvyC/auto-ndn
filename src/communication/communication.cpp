@@ -91,9 +91,10 @@ Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
 void
 Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
   std::string dataStr(reinterpret_cast<const char*>(data->getContent().value()), data->getContent().value_size());
+  std::cout << "Data name: " << data->getName() << std::endl;
   // m_decision = dataStr;
-  std::string roadName = (data->getName().getSubName(1, 1)).toUri();
-
+  std::string roadName = (data->getName().getSubName(2, 1)).toUri();
+  std::cout << "Road name: " << roadName << std::endl;
   roadName = roadName.substr(1, roadName.length()-1);
   roadName.replace(roadName.find("%2C"),3,",");
   roadName.replace(roadName.find("%2C"),3,",");
@@ -102,6 +103,7 @@ Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
   control.setRoadStatus(roadName, dataStr);
 
   //std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
+  std::cout << "Data for road " << roadName << "got validated" << std::endl;
 }
 
 void
