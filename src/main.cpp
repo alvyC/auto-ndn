@@ -36,6 +36,7 @@ int main() {
     autoNdn.run();
   }
   else {
+    std::cout << "Error in configuration file processing! Exiting from Autondn" << std::endl;
     throw Error("Error in configuration file processing! Exiting from Autondn");
   }
 
