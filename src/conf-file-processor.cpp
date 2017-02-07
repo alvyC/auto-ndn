@@ -122,6 +122,29 @@ ConfFileProcessor::processSectionSecurity(const ConfigSection& section) {
 
   m_autondn.loadValidator(it->second, m_confFileName);
 
+  it++;
+
+  for (; it != section.end(); it++) {
+    using namespace boost::filesystem;
+
+    if (it->first != "cert-to-publish") {
+      std::cerr << "Error: Expect cert-to-publish!" << std::endl;
+      return false;
+    }
+
+    std::string file = it->second.data();
+    path certfilePath = absolute(file, path(m_confFileName).parent_path());
+    shared_ptr<ndn::IdentityCertificate> idCert =
+    ndn::io::load<ndn::IdentityCertificate>(certfilePath.string());
+
+    if (idCert == nullptr) {
+      std::cerr << "Error: Cannot load cert-to-publish: " << file << "!" << std::endl;
+      return false;
+    }
+
+    m_autondn.loadCertToPublish(idCert);
+  }
+
   return true;
 }
 
