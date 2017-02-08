@@ -75,7 +75,6 @@ public:
     return m_keyChain;
   }
 
-private:
   void
   initializeKey();
 
@@ -119,12 +118,13 @@ private:
   Control m_control;
   Communication m_communication;
   ConfParameter m_confParameter;
+  security::CertificateStore m_certStore;
+  ndn::shared_ptr<ndn::CertificateCacheTtl> m_certificateCache;
+
   Validator m_validator;
   ndn::KeyChain m_keyChain;
   ndn::security::SigningInfo m_signingInfo;
   ndn::Name m_defaultCertName;
-  security::CertificateStore m_certStore;
-  ndn::shared_ptr<ndn::CertificateCacheTtl> m_certificateCache;
 };
 
 } // end of namespace autondn

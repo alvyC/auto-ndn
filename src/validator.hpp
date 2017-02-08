@@ -75,7 +75,7 @@ protected:
         // If the certificate is found, no reason to express interest
         shared_ptr<ndn::Data> data = make_shared<ndn::Data>(interest.getName());
         data->setContent(cert->wireEncode());
-
+	std::cout << "Certificate found in cache: "<< std::endl;
         Validator::onData(interest, *data, request);
       }
       else {
@@ -83,7 +83,7 @@ protected:
         ndn::Name broadcastName = m_broadcastPrefix;
         broadcastName.append(interest.getName());
         interest.setName(broadcastName);
-
+  	std::cout << "Express interest for certificate: "<< interest.getName() << std::endl;
         // Attempt to fetch the certificate
         m_face->expressInterest(interest,
                                 bind(&Validator::onData, this, _1, _2, request),
