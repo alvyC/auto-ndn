@@ -46,6 +46,11 @@ public:
     return m_confParameter;
   }
 
+  ndn::security::SigningInfo&
+  getSigningInfo() {
+    return m_signingInfo;
+  }
+
   void
   run();
 

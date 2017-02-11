@@ -57,7 +57,7 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   data->setFreshnessPeriod(ndn::time::seconds(10));
   data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
 
-  m_keyChain.sign(*data);
+  m_keyChain.sign(*data, m_autondn.getSigningInfo());
   /* ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID,
                                                   m_rootIdentity));*/
   m_face.put(*data);
@@ -76,6 +76,7 @@ Communication::sendInterest(const ndn::Interest& interest) {
 
 void
 Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
+  std::cout << "Interest Name: " << interest.getName() << std::endl;
   std::cout << "[communication] Got data: " << data.getName() << std::endl;
   if (data.getSignature().hasKeyLocator()) {
     if (data.getSignature().getKeyLocator().getType() == ndn::KeyLocator::KeyLocator_Name) {
@@ -108,8 +109,7 @@ Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
 
 void
 Communication::onValidationFailed(const std::shared_ptr<const ndn::Data>& data, const std::string& msg) {
-  std::cout << "Validation failed." << std::endl;
-
+  std::cout << data->getName() << " validation failed. " << msg << std::endl;
 }
 
 void

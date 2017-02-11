@@ -41,7 +41,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   void
   AutoNdn::initialize() {
     m_confParameter.buildCarName();
-    std::cout << m_confParameter.getCarName() << std::endl;
+    std::cout << "Vehicle name: " << m_confParameter.getCarName() << std::endl;
     initializeKey();
   }
 
