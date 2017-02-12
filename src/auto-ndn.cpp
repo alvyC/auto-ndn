@@ -43,6 +43,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     m_confParameter.buildCarName();
     std::cout << "Vehicle name: " << m_confParameter.getCarName() << std::endl;
     initializeKey();
+    setKeyInterestFilter();
   }
 
   void
@@ -60,8 +61,10 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   void
   AutoNdn::onKeyInterest(const ndn::Name& name, const ndn::Interest& interest) {
     const ndn::Name& interestName = interest.getName();
-
     ndn::Name certName = interestName.getSubName(name.size());
+    
+    std::cout << "Got interest for certificate: " << certName << std::endl;
+
     ndn::shared_ptr<const ndn::IdentityCertificate> cert = getCertificate(certName);
 
     if (!static_cast<bool>(cert))
@@ -70,7 +73,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     ndn::shared_ptr<ndn::Data> data = ndn::make_shared<ndn::Data>();
     data->setName(interestName);
     data->setContent(cert->wireEncode());
-    m_keyChain.signWithSha256(*data);
+    m_keyChain.sign(*data, m_signingInfo);
 
     m_face.put(*data);
   }

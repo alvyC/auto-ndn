@@ -57,8 +57,8 @@ private:
   std::string m_currentRoad;
   std::string m_nextRoad;
   std::map< std::string, std::string > roadStatusMap;
-  Communication& m_communication;
   ndn::util::Scheduler& m_scheduler;
+  Communication& m_communication;
   bool m_isMotionDone = false;
   std::vector<std::pair <int, int>>::iterator m_it, m_alter_it;
 

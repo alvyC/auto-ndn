@@ -47,7 +47,8 @@ Control::runPrimaryRoute() {
 
     if(m_roadTracker+1 == m_path.size()) {
       std::cout << "The end" << std::endl;
-      return;
+      //return;
+      exit(0);
     }
 
     m_current_x = getCoordinate(m_path[m_roadTracker].first, 0);

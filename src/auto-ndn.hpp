@@ -104,9 +104,11 @@ public:
     m_certStore.find(certificateNameWithoutVersion);
 
     if (cert != nullptr) {
-      return cert;
+     std::cout << "Certificate Store: " << certificateNameWithoutVersion << std::endl;
+     return cert;
     }
-
+    
+    std::cout << "Certificate Cache: " << certificateNameWithoutVersion << std::endl;
     return m_certificateCache->getCertificate(certificateNameWithoutVersion);
   }
 
