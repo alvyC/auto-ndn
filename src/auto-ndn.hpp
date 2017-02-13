@@ -85,7 +85,7 @@ public:
 
   void
   initialize();
-	
+
   void
   setKeyInterestFilter();
 
@@ -107,7 +107,7 @@ public:
      std::cout << "Certificate Store: " << certificateNameWithoutVersion << std::endl;
      return cert;
     }
-    
+
     std::cout << "Certificate Cache: " << certificateNameWithoutVersion << std::endl;
     return m_certificateCache->getCertificate(certificateNameWithoutVersion);
   }
@@ -125,8 +125,8 @@ private:
   Control m_control;
   Communication m_communication;
   ConfParameter m_confParameter;
-  security::CertificateStore m_certStore;
-  ndn::shared_ptr<ndn::CertificateCacheTtl> m_certificateCache;
+  security::CertificateStore m_certStore;                       // used for storing own certs
+  ndn::shared_ptr<ndn::CertificateCacheTtl> m_certificateCache; // used for storing other's certs
 
   Validator m_validator;
   ndn::KeyChain m_keyChain;

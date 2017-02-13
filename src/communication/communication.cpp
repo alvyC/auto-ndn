@@ -104,7 +104,7 @@ Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
   control.setRoadStatus(roadName, dataStr);
 
   //std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
-  std::cout << "Data for road " << roadName << "got validated" << std::endl;
+  std::cout << "Data for road " << roadName << " got validated" << std::endl;
 }
 
 void
@@ -138,40 +138,4 @@ Communication::onTimeout(const ndn::Interest& interest) {
   std::cout << "Timeout " << interest << std::endl;
 }
 
-/*
-void
-Communication::startInfoRequest(){
-  std::cout << "Communication:: run" << std::endl;
-  std::cout << "Communication::nextRoad: " << m_nextRoad << std::endl;
-  std::cout << "Communication::current road: " << control->getCurrentRoad() << std::endl;
-
-  while(control->getNextRoad() != "") {
-    //std::cout << "Communication:: getNextRoad: " << control->getNextRoad() << std::endl;
-    if(m_nextRoad != control->getCurrentRoad()) {
-      if( !m_interestSent ) {
-        m_interestSent = true;
-
-        ndn::Name interestName("/autondn");
-        interestName.append(m_carName);
-        interestName.append(control->getNextRoad());
-
-        sendInterest( ndn::Interest(interestName) );
-      } //end of inner if
-    }
-    else {
-      m_nextRoad = control->getNextRoad();
-      m_interestSent = false;
-    }
-    usleep(10000);
-  } //end of while
-  std::cout << "Done sending interest" << std::endl;
-} //end of startReqInfo
-
-void
-Communication::run(){
-//  m_scheduler.scheduleEvent( ndn::time::seconds(2), ndn::bind(&Communication::startInfoRequest, this) );
-   usleep(3000000);
-   startInfoRequest();
-}
-*/
 } //namespace autondn
