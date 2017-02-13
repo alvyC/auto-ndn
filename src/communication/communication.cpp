@@ -6,6 +6,9 @@
 #include <ndn-cxx/security/validator-config.hpp>
 #include <ndn-cxx/util/time.hpp>
 
+#include <ctime>
+#include <chrono>
+
 namespace autondn {
 
 Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, ndn::KeyChain& keyChain)
@@ -84,9 +87,18 @@ Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
     }
   }
 
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
   m_autondn.getValidator().validate(data,
                                     ndn::bind(&Communication::onDataValidated, this, _1),
                                     ndn::bind(&Communication::onValidationFailed, this, _1, _2));
+  end = std::chrono::system_clock::now();
+
+  std::chrono::duration<double> elapsed_seconds = end - start;
+  std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+
+  std::cout << "finished computation at " << std::ctime(&end_time)
+            << "elapsed time: " << elapsed_seconds.count() << "s\n";
 }
 
 void
