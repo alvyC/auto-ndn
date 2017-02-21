@@ -38,6 +38,8 @@ public:
   void
   run();
 
+  std::vector<std::string> roadsTaken;
+
 private:
   void
   runPrimaryRoute();

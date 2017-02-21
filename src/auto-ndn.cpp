@@ -1,8 +1,12 @@
+#define BOOST_LOG_DYN_LINK 1
+#include "logging.hpp"
 #include <ndn-cxx/util/time.hpp>
 
 #include "auto-ndn.hpp"
 
 namespace autondn {
+
+_LOG_INIT(autondn);
 
 AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   : m_face(face)
@@ -17,7 +21,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
 
   void
   AutoNdn::run() {
-    std::cout << "In AutoNdn::run() " << std::endl;
+    //std::cout << "In AutoNdn::run() " << std::endl;
     initialize();
     m_control.run();
 
@@ -35,13 +39,13 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     m_signingInfo = ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID, defaultIdentity);
     m_keyChain.addIdentity(defaultIdentity);
     m_defaultCertName = m_keyChain.getDefaultCertificateName();
-    std::cout << "Initialize key: default certificate = " << m_defaultCertName << std::endl;
+    //std::cout << "Initialize key: default certificate = " << m_defaultCertName << std::endl;
   }
 
   void
   AutoNdn::initialize() {
     m_confParameter.buildCarName();
-    std::cout << "Vehicle name: " << m_confParameter.getCarName() << std::endl;
+    _LOG_DEBUG("Vehicle name: " << m_confParameter.getCarName());
     initializeKey();
     setKeyInterestFilter();
   }
@@ -62,8 +66,8 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   AutoNdn::onKeyInterest(const ndn::Name& name, const ndn::Interest& interest) {
     const ndn::Name& interestName = interest.getName();
     ndn::Name certName = interestName.getSubName(name.size());
-    
-    std::cout << "Got interest for certificate: " << certName << std::endl;
+
+    _LOG_TRACE("Got interest for certificate: " << certName);
 
     ndn::shared_ptr<const ndn::IdentityCertificate> cert = getCertificate(certName);
 
