@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -lt 1 ]; then
     echo "$0 <atleast 1 IP>"
 fi
 
@@ -56,9 +56,9 @@ do
   #echo $car_cert
 
 $ssh_host << EOF
-  $workDir/ndnsec-keygen $car_pref > $workDir/car.keys > /dev/null
-  $workDir/ndnsec-cert-gen -N $car_pref -p $car_pref -s $man_pref $workDir/car.keys > $workDir/$car_cert > /dev/null
-  $workDir/ndnsec-cert-install -f $workDir/$car_cert > /dev/null
+  $workDir/ndnsec-keygen $car_pref > $workDir/car.keys
+  $workDir/ndnsec-cert-gen -N $car_pref -p $car_pref -s $man_pref $workDir/car.keys > $workDir/$car_cert
+  $workDir/ndnsec-cert-install -f $workDir/$car_cert
 EOF
 done
 rm tmp1
