@@ -119,6 +119,12 @@ public:
     }
   }
 
+  void
+  generateAndAddPseudonym();
+
+  void
+  requestCertForPnym(const ndn::Interest&, const ndn::Data&);
+
 private:
   ndn::Face& m_face;
   ndn::Scheduler& m_scheduler;
@@ -132,6 +138,9 @@ private:
   ndn::KeyChain m_keyChain;
   ndn::security::SigningInfo m_signingInfo;
   ndn::Name m_defaultCertName;
+
+  ndn::Name m_vehiclePnym;
+  ndn::Name m_makePnym;
 };
 
 } // end of namespace autondn

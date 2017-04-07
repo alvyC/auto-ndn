@@ -89,4 +89,38 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   void
   AutoNdn::onRegistrationFailed(const ndn::Name& name) {
   }
+
+  void
+  AutoNdn::generateAndAddPseudonym() {
+    /* (1) generate vehicle pseudonym: <vehicle-pnym>/ <make-pnym>
+       (2) Create key for the pseudonym
+    */
+    m_vehiclePnym = ndn::Name("/pseudonym1");
+    m_makePnym = m_confParameter.getCarMake();
+    m_vehiclePnym.append(m_makePnym);
+
+    ndn::Name keyName = m_keyChain.generateRsaKeyPairAsDefault(m_vehiclePnym, true);
+    std::shared_ptr<ndn::PublicKey> pubKey = m_keyChain.getPublicKey(keyName);
+
+    /*(3) Ask for proxy key, Interest: /autondn/CIP/request-key
+          autondn-cip: onKeyRequestInitInterest()*/
+    ndn::Interest interest("/autondn/CIP/request-key");
+    m_face.expressInterest(interest,
+                           std::bind(&AutoNdn::requestCertForPnym, this, _1, _2), // step (4) and (5) here
+                           std::bind([] {}));
+    /*(4) After getting proxy key, create an encrypted interest
+           Interest: /autondn/CIP/<cip-id>/E-CIP{manufacturer, E-Man{vid, K-VCurr, K-VNew}}
+           autondn-cip: onCertInterest()*/
+
+    /*(5) Send the Interest to manufacturer via proxy for cert*/
+  }
+
+  void
+  AutoNdn::requestCertForPnym(const ndn::Interest& i, const ndn::Data& d) {
+    ndn::Interest newInterest("/autondn/CIP");
+    /* (1) Encrypt Vehicle's ID, current key, new key with **manufacturer's key**
+       (2) Encrypt the step (1)'s encrypted items and manufacturer's name with **proxy's key**
+    */
+    //newInterest.getName().append();
+  }
 } // end of namespace autondn
