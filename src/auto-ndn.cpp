@@ -1,6 +1,7 @@
 #define BOOST_LOG_DYN_LINK 1
 #include "logging.hpp"
 #include <ndn-cxx/util/time.hpp>
+#include <ndn-cxx/security/v1/certificate.hpp>
 
 #include "auto-ndn.hpp"
 
@@ -58,7 +59,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
 			     std::bind(&AutoNdn::onKeyInterest,
 				       this, _1, _2),
 			     std::bind(&AutoNdn::onKeyPrefixRegSuccess, this, _1),
-		             std::bind(&AutoNdn::onRegistrationFailed, this, _1),
+		       std::bind(&AutoNdn::onRegistrationFailed, this, _1),
 			     m_signingInfo);
   }
 
@@ -117,10 +118,15 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
 
   void
   AutoNdn::requestCertForPnym(const ndn::Interest& i, const ndn::Data& d) {
-    ndn::Interest newInterest("/autondn/CIP");
     /* (1) Encrypt Vehicle's ID, current key, new key with **manufacturer's key**
        (2) Encrypt the step (1)'s encrypted items and manufacturer's name with **proxy's key**
     */
-    //newInterest.getName().append();
+    ndn::Name interestName("/autondn/CIP");
+    interestName.append(ndn::Name(i.getName().get(-1))); // get the name (id) of the proxy
+
+    ndn::Interest interest(interestName); // interest name: /autondn/CIP/<proxy-id>
+
+    ndn::security::v1::Certificate cert(d);
+
   }
 } // end of namespace autondn
