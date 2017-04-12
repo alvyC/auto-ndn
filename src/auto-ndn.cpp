@@ -2,6 +2,8 @@
 #include "logging.hpp"
 #include <ndn-cxx/util/time.hpp>
 #include <ndn-cxx/security/v1/certificate.hpp>
+#include <ndn-cxx/security/v1/public-key.hpp>
+#include <ndn-cxx/security/transform/public-key.hpp>
 
 #include "auto-ndn.hpp"
 
@@ -126,7 +128,10 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
 
     ndn::Interest interest(interestName); // interest name: /autondn/CIP/<proxy-id>
 
-    ndn::security::v1::Certificate cert(d);
+    ndn::security::v1::Certificate cert(d); // make certificate object from the certificate data packet
+    ndn::security::v1::PublicKey pKey = cert.getPublicKeyInfo();
 
+    ndn::security::transform::PublicKey pKeyTransform;
+    pKeyTransform.loadPkcs8(pKey.get().buf(), pKey.get().size());
   }
 } // end of namespace autondn
