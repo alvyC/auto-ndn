@@ -75,7 +75,7 @@ public:
     return m_defaultCertName;
   }
 
-  ndn::KeyChain&
+  ndn::security::KeyChain&
   getKeyChain() {
     return m_keyChain;
   }
@@ -135,11 +135,12 @@ private:
   ndn::shared_ptr<ndn::CertificateCacheTtl> m_certificateCache; // used for storing other's certs
 
   Validator m_validator;
-  ndn::KeyChain m_keyChain;
+  ndn::security::KeyChain m_keyChain;
   ndn::security::SigningInfo m_signingInfo;
   ndn::Name m_defaultCertName;
 
-  ndn::Name m_vehiclePnym;
+  ndn::Name m_vehicleCurrentPnym;
+  ndn::Name m_vehicleNewPnym;
   ndn::Name m_makePnym;
 };
 

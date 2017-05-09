@@ -16,7 +16,7 @@ namespace autondn {
 
 _LOG_INIT(Communication);
 
-Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, ndn::KeyChain& keyChain)
+Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, ndn::security::KeyChain& keyChain)
     : m_autondn(autondn)
     , m_face(face)
     , control(cont)
@@ -84,7 +84,7 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   m_keyChain.sign(*data, m_autondn.getSigningInfo());
   /* ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID,
                                                   m_rootIdentity));*/
-   _LOG_DEBUG("Data Sign End. ");  
+   _LOG_DEBUG("Data Sign End. ");
    m_face.put(*data);
 }
 
