@@ -123,7 +123,14 @@ public:
   generateAndAddPseudonym();
 
   void
-  requestCertForPnym(const ndn::Interest&, const ndn::Data&);
+  requestCertForPnym(const ndn::Interest&, const ndn::Data&, const ndn::Name&);
+
+  void
+  installVehicleCert(const ndn::Interest&, const ndn::Data&, const ndn::Name&);
+
+private:
+  ndn::Name
+  getNewPseudonym();
 
 private:
   ndn::Face& m_face;
@@ -140,8 +147,8 @@ private:
   ndn::Name m_defaultCertName;
 
   ndn::Name m_vehicleCurrentPnym;
-  ndn::Name m_vehicleNewPnym;
-  ndn::Name m_makePnym;
+  //ndn::Name m_vehicleNewPnym;
+  ndn::Name m_makeCurrentPnym;
 };
 
 } // end of namespace autondn
