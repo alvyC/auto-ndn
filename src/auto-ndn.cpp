@@ -44,16 +44,13 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   AutoNdn::initializeKey() {
     ndn::Name defaultIdentity = m_confParameter.getCarName();
     m_signingInfo = ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID, defaultIdentity);
-    //m_keyChain.setDefaultIdentity(ndn::security::pib::Identity(defaultIdentity));
-    m_keyChain.addIdentity(defaultIdentity);
-    m_defaultCertName = m_keyChain.getDefaultCertificateName();
-    //std::cout << "Initialize key: default certificate = " << m_defaultCertName << std::endl;
   }
 
   void
   AutoNdn::initialize() {
     m_confParameter.buildCarName();
     // TODO: initialize m_vehicleCurrentPnym and schedule generate and add Pseudonym to the pseudonym list
+
     _LOG_DEBUG("Vehicle name: " << m_confParameter.getCarName());
     initializeKey();
     setKeyInterestFilter();
@@ -116,7 +113,8 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     ndn::Name vehicleNewPnym = getNewPseudonym();
 
     // generate key for the new pseudonym
-    ndn::Name keyName = m_keyChain.generateRsaKeyPairAsDefault(vehicleNewPnym, true);
+    // ndn::Name keyName = m_keyChain.generateRsaKeyPairAsDefault(vehicleNewPnym, true);
+    ndn::security::SigningInfo signingInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID, vehicleNewPnym);
     //std::shared_ptr<ndn::PublicKey> pubKey = m_keyChain.getPublicKey(keyName);
 
     /*(3) Initiate the certificate retrieval process by asking for proxy's key, Interest: /autondn/CIP/request-key
@@ -127,9 +125,12 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
                            std::bind([] {}));
     /*(4) After getting proxy key, create an encrypted interest
            Interest: /autondn/CIP/<cip-id>/E-CIP{manufacturer, E-Man{vid, K-VCurr, K-VNew}}
-           autondn-cip: onCertInterest()*/
+           autondn-cip: onCertInterest()
 
-    /*(5) Send the Interest to manufacturer via proxy for cert*/
+      (5) Send the Interest to manufacturer via proxy for cert
+
+      step (4) and (5) are done in requestCertForPnym().
+    */
   }
 
   void

@@ -16,7 +16,7 @@ namespace autondn {
 
 _LOG_INIT(Communication);
 
-Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, ndn::security::KeyChain& keyChain)
+Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, ndn::security::v2::KeyChain& keyChain)
     : m_autondn(autondn)
     , m_face(face)
     , control(cont)
