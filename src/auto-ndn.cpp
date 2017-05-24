@@ -33,9 +33,9 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   AutoNdn::initializeKey() {
     ndn::Name defaultIdentity = m_confParameter.getCarName();
     m_signingInfo = ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID, defaultIdentity);
-    m_keyChain.addIdentity(defaultIdentity);
-    m_defaultCertName = m_keyChain.getDefaultCertificateName();
-    std::cout << "Initialize key: default certificate = " << m_defaultCertName << std::endl;
+    //m_keyChain.addIdentity(defaultIdentity);
+    //m_defaultCertName = m_keyChain.getDefaultCertificateName();
+    //std::cout << "Initialize key: default certificate = " << m_defaultCertName << std::endl;
   }
 
   void
@@ -62,7 +62,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   AutoNdn::onKeyInterest(const ndn::Name& name, const ndn::Interest& interest) {
     const ndn::Name& interestName = interest.getName();
     ndn::Name certName = interestName.getSubName(name.size());
-    
+
     std::cout << "Got interest for certificate: " << certName << std::endl;
 
     ndn::shared_ptr<const ndn::IdentityCertificate> cert = getCertificate(certName);

@@ -8,7 +8,7 @@
 
 namespace autondn {
 
-Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, ndn::KeyChain& keyChain)
+Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, ndn::security::v2::KeyChain& keyChain)
     : m_autondn(autondn)
     , m_face(face)
     , control(cont)

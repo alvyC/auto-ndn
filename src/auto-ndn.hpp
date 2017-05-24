@@ -6,7 +6,7 @@
 
 #include <ndn-cxx/face.hpp>
 #include <ndn-cxx/util/scheduler.hpp>
-#include <ndn-cxx/security/key-chain.hpp>
+#include <ndn-cxx/security/v2/key-chain.hpp>
 #include <ndn-cxx/security/validator-config.hpp>
 #include <ndn-cxx/security/signing-info.hpp>
 #include <ndn-cxx/security/certificate-cache-ttl.hpp>
@@ -75,7 +75,7 @@ public:
     return m_defaultCertName;
   }
 
-  ndn::KeyChain&
+  ndn::security::v2::KeyChain&
   getKeyChain() {
     return m_keyChain;
   }
@@ -129,7 +129,7 @@ private:
   ndn::shared_ptr<ndn::CertificateCacheTtl> m_certificateCache; // used for storing other's certs
 
   Validator m_validator;
-  ndn::KeyChain m_keyChain;
+  ndn::security::v2::KeyChain m_keyChain;
   ndn::security::SigningInfo m_signingInfo;
   ndn::Name m_defaultCertName;
 };

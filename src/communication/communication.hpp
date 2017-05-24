@@ -2,7 +2,7 @@
 #define COMMUNICATION_HPP
 
 #include <ndn-cxx/face.hpp>
-#include <ndn-cxx/security/key-chain.hpp>
+#include <ndn-cxx/security/v2/key-chain.hpp>
 // #include <ndn-cxx/security/validator-regex.hpp>
 // #include <ndn-cxx/security/sec-rule-relative.hpp>
 #include <ndn-cxx/util/time.hpp>
@@ -21,7 +21,7 @@ class AutoNdn;
 class Communication
 {
 public:
-  Communication(AutoNdn&, ndn::Face&, Control&, ndn::KeyChain&);
+  Communication(AutoNdn&, ndn::Face&, Control&, ndn::security::v2::KeyChain&);
 
   void
   onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest);
@@ -76,7 +76,7 @@ private:
   Control& control;
   ConfParameter& m_confParam;
 
-  ndn::KeyChain& m_keyChain;
+  ndn::security::v2::KeyChain& m_keyChain;
   //std::string m_nextRoad;
   //bool m_interestSent = false;
   //std::string m_carName;
