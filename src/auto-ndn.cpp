@@ -6,6 +6,7 @@
 #include <ndn-cxx/security/transform/public-key.hpp>
 #include <ndn-cxx/encoding/buffer.hpp>
 #include <ndn-cxx/security/pib/identity.hpp>
+#include <ndn-cxx/security/pib/key.hpp>
 
 #include <iostream>
 
@@ -111,6 +112,8 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
        (2) Create key for the pseudonym
     */
     ndn::Name vehicleNewPnym = getNewPseudonym();
+    ndn::security::pib::Identity vehicleNewPnymIdentity = m_keyChain.createIdentity(vehicleNewPnym); // create "Identity" for pseudonym
+    ndn::security::pib::Key vehicleNewPnymKey = m_keyChain.createKey(vehicleNewPnymIdentity);        // create "Key" for pseudonym
 
     // generate key for the new pseudonym
     // ndn::Name keyName = m_keyChain.generateRsaKeyPairAsDefault(vehicleNewPnym, true);
@@ -141,11 +144,12 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     interestName.append(ndn::Name(i.getName().get(-1)));
 
     // make certificate object from the certificate data packet
-    ndn::security::v1::Certificate cert(d);
-    ndn::security::v1::PublicKey proxyKeyInfo = cert.getPublicKeyInfo();
+    ndn::security::v2::Certificate cert(d);
+    //ndn::security::v1::PublicKey proxyKeyInfo = cert.getPublicKeyInfo();
 
     ndn::security::transform::PublicKey proxyKey;
-    proxyKey.loadPkcs8(proxyKeyInfo.get().buf(), proxyKeyInfo.get().size());
+    //proxyKey.loadPkcs8(proxyKeyInfo.get().buf(), proxyKeyInfo.get().size());
+    proxyKey.loadPkcs8(cert.getPublicKey().buf(), cert.getPublicKey().size());
 
     // encrypt make's name using proxy's key
     std::string makeName = m_confParameter.getCarMake().toUri();
@@ -157,39 +161,38 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     interestName.append(cipherMakeName->buf(), cipherMakeName->size());
 
     // get manufacturer's key and load it
-    ndn::Name manKeyName = m_keyChain.getDefaultKeyNameForIdentity(m_makeCurrentPnym);
-    std::shared_ptr<ndn::PublicKey> manPubKeyInfo = m_keyChain.getPublicKey(manKeyName);
+    ndn::security::pib::Key manKeyBits = m_keyChain.getPib().getIdentity(m_makeCurrentPnym).getDefaultKey();
     ndn::security::transform::PublicKey manKey;
-    manKey.loadPkcs8(manPubKeyInfo->get().buf(), manPubKeyInfo->get().size());
+    manKey.loadPkcs8(manKeyBits.getPublicKey().buf(), manKeyBits.getPublicKey().size());
 
     // Get vehicle's current key
-    ndn::Name vehicleCurrentKeyName = m_keyChain.getDefaultKeyNameForIdentity(m_vehicleCurrentPnym);
-    std::shared_ptr<ndn::PublicKey> vehicleCurrentKeyInfo = m_keyChain.getPublicKey(vehicleCurrentKeyName);
+    ndn::security::pib::Key vehicleCurrentKeyBits = m_keyChain.getPib().getIdentity(m_vehicleCurrentPnym).getDefaultKey();
 
     // Get vehicle's new key
-    ndn::Name vehicleNewKeyName = m_keyChain.getDefaultKeyNameForIdentity(vehicleNewPnym);
-    std::shared_ptr<ndn::PublicKey> vehicleNewKeyInfo = m_keyChain.getPublicKey(vehicleNewKeyName);
-
-    // Encrypt vehicle's current key using manufacturer's key
-    ndn::ConstBufferPtr cipherVehicleCurrentKey = manKey.encrypt(vehicleCurrentKeyInfo->get().buf(), vehicleCurrentKeyInfo->get().size());
+    ndn::security::pib::Key vehicleNewKeyBits = m_keyChain.getPib().getIdentity(vehicleNewPnym).getDefaultKey();
+    ndn::Name vehicleNewKeyName = m_keyChain.getPib().getIdentity(vehicleNewPnym).getDefaultKey().getName();
+    // Encrypt vehicle's current key using manufacturer's key and append ciphertext to interest name
+    ndn::ConstBufferPtr cipherVehicleCurrentKey = manKey.encrypt(vehicleCurrentKeyBits.getPublicKey().buf(), vehicleCurrentKeyBits.getPublicKey().size());
     interestName.append(cipherVehicleCurrentKey->buf(), cipherVehicleCurrentKey->size());
 
     // Encrypt vehicle's new key using manufacturer's key
-    ndn::ConstBufferPtr cipherVehicleNewKey = manKey.encrypt(vehicleNewKeyInfo->get().buf(), vehicleNewKeyInfo->get().size());
+    ndn::ConstBufferPtr cipherVehicleNewKey = manKey.encrypt(vehicleNewKeyBits.getPublicKey().buf(), vehicleCurrentKeyBits.getPublicKey().size());
     interestName.append(cipherVehicleNewKey->buf(), cipherVehicleNewKey->size());
+
+
 
     //Interest: /autondn/CIP/<cip-id>/E-CIP{manufacturer}/ E-Man{vid}/E-man{K-VCurr}, E-man{K-VNew}
     ndn::Interest interest(interestName);
     m_face.expressInterest(interest,
-                           std::bind(&AutoNdn::installVehicleCert, this, _1, _2, vehicleCurrentKeyName), // got certificate, now install it
+                           std::bind(&AutoNdn::installVehicleCert, this, _1, _2, vehicleNewKeyName), // got certificate, now install it
                            std::bind([]{})); // timeout
   }
 
   void
   AutoNdn::installVehicleCert(const ndn::Interest& i, const ndn::Data& d,
-                              const ndn::Name& vehicleCurrentKeyName) {
+                              const ndn::Name& vehicleNewKeyName) {
     /* Data received from proxy contains certificate signed by manufacturer.
-       Data is encrypted with vehicle's key (vehicleCurrentKeyName), so need to decrypt it first
+       Data is encrypted with vehicle's key (vehicleNewKeyName), so need to decrypt it first
     */
 
   }
