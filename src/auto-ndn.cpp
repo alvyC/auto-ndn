@@ -1,4 +1,3 @@
-#define BOOST_LOG_DYN_LINK 1
 #include "logging.hpp"
 #include <ndn-cxx/util/time.hpp>
 #include <ndn-cxx/security/v1/certificate.hpp>
@@ -54,7 +53,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   AutoNdn::initialize() {
     m_confParameter.buildCarName();
     // TODO: initialize m_vehicleCurrentPnym and schedule generate and add Pseudonym to the pseudonym list
-    _LOG_DEBUG("Vehicle name: " << m_confParameter.getCarName());
+    //_LOG_DEBUG("Vehicle name: " << m_confParameter.getCarName());
     initializeKey();
     setKeyInterestFilter();
   }
@@ -76,7 +75,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     const ndn::Name& interestName = interest.getName();
     ndn::Name certName = interestName.getSubName(name.size());
 
-    _LOG_TRACE("Got interest for certificate: " << certName);
+    //_LOG_TRACE("Got interest for certificate: " << certName);
 
     ndn::shared_ptr<const ndn::IdentityCertificate> cert = getCertificate(certName);
 
@@ -124,7 +123,8 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     ndn::Interest interest("/autondn/CIP/request-key");
     m_face.expressInterest(interest,
                            std::bind(&AutoNdn::requestCertForPnym, this, _1, _2, vehicleNewPnym), // step (4) and (5) here
-                           std::bind([] {}));
+                           std::bind([] {}),
+                           std::bind([]{}));
     /*(4) After getting proxy key, create an encrypted interest
            Interest: /autondn/CIP/<cip-id>/E-CIP{manufacturer, E-Man{vid, K-VCurr, K-VNew}}
            autondn-cip: onCertInterest()*/
@@ -181,6 +181,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     ndn::Interest interest(interestName);
     m_face.expressInterest(interest,
                            std::bind(&AutoNdn::installVehicleCert, this, _1, _2, vehicleCurrentKeyName), // got certificate, now install it
+                           std::bind([]{}),
                            std::bind([]{})); // timeout
   }
 
@@ -190,6 +191,6 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     /* Data received from proxy contains certificate signed by manufacturer.
        Data is encrypted with vehicle's key (vehicleCurrentKeyName), so need to decrypt it first
     */
-
+    
   }
 } // end of namespace autondn

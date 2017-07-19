@@ -43,6 +43,7 @@ def build(bld):
         use='NDN_CXX BOOST',
         includes='. src',
         export_includes='. src',
+        cxxflags = '-DBOOST_LOG_DYN_LINK'
         )
 
     autondn = bld(
@@ -51,6 +52,7 @@ def build(bld):
         source='src/main.cpp',
         use='autondn-objects',
         #lib=['wiringPi'],
+        cxxflags = '-DBOOST_LOG_DYN_LINK'
         )
 
     if bld.env['WITH_TESTS']:

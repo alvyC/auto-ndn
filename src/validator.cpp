@@ -61,7 +61,8 @@ _LOG_INIT(validator);
                                 bind(&Validator::onTimeout,
                                      this, _1, request->m_nRetries,
                                      onFailure,
-                                     request));
+                                     request),
+                                bind([]{}));
       }
     }
   }

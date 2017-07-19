@@ -1,4 +1,4 @@
-#define BOOST_LOG_DYN_LINK 1
+
 
 #include "communication.hpp"
 #include "control/control.hpp"
@@ -28,7 +28,7 @@ Communication::Communication(AutoNdn& autondn, ndn::Face& face, Control& cont, n
 void
 Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest& interest) {
 
-  _LOG_DEBUG("Interest received for: " << interest.toUri());
+  //_LOG_DEBUG("Interest received for: " << interest.toUri());
 
   bool hasMatched = false;
   for(auto road: control.roadsTaken) {
@@ -42,7 +42,7 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
     }
   }
   if (!hasMatched) {
-    _LOG_TRACE("Don't have data");
+    //_LOG_TRACE("Don't have data");
     return;
   }
 
@@ -61,7 +61,7 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   dataName.append(m_confParam.getCarName());
   const ndn::time::system_clock::TimePoint tp = ndn::time::system_clock::now();
   dataName.appendTimestamp(tp);
-  _LOG_DEBUG("Sending data: " << dataName.toUri());
+  //_LOG_DEBUG("Sending data: " << dataName.toUri());
 
   std::string content = "Yes";
   /*/80% of the time answer Yes, that is road is plyable
@@ -80,11 +80,11 @@ Communication::onInterest(const ndn::InterestFilter& filter, const ndn::Interest
   data->setName(dataName);
   //data->setFreshnessPeriod(ndn::time::seconds(10));
   data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
-  _LOG_DEBUG("Data Sign Start.");
+  //_LOG_DEBUG("Data Sign Start.");
   m_keyChain.sign(*data, m_autondn.getSigningInfo());
   /* ndn::security::SigningInfo(ndn::security::SigningInfo::SIGNER_TYPE_ID,
                                                   m_rootIdentity));*/
-   _LOG_DEBUG("Data Sign End. ");
+   //_LOG_DEBUG("Data Sign End. ");
    m_face.put(*data);
 }
 
@@ -94,18 +94,19 @@ Communication::sendInterest(const ndn::Interest& interest) {
   // schedule interest
   m_face.expressInterest(interest,
                          bind(&Communication::onData, this, _1, _2),
-                         bind(&Communication::onTimeout, this, _1));
+                         bind(&Communication::onTimeout, this, _1),
+                         std::bind([]{}));
 
-  _LOG_DEBUG("Sending interest for: " << interest.toUri());
+  //_LOG_DEBUG("Sending interest for: " << interest.toUri());
 }
 
 void
 Communication::onData(const ndn::Interest& interest, const ndn::Data& data) {
-  _LOG_DEBUG("Got data for : " << data.getName() << " for interest " << interest.getName());
+  //_LOG_DEBUG("Got data for : " << data.getName() << " for interest " << interest.getName());
 
   if (data.getSignature().hasKeyLocator()) {
     if (data.getSignature().getKeyLocator().getType() == ndn::KeyLocator::KeyLocator_Name) {
-      _LOG_DEBUG("Data is signed with " << data.getSignature().getKeyLocator().getName());
+      //_LOG_DEBUG("Data is signed with " << data.getSignature().getKeyLocator().getName());
     }
   }
 
@@ -137,18 +138,18 @@ Communication::onDataValidated(const std::shared_ptr<const ndn::Data>& data) {
   control.setRoadStatus(roadName, dataStr);
 
   //std::cout << "[communication] got Data: " << dataStr << " for Interest: " << interest.toUri() << std::endl;
-  _LOG_DEBUG("Data " << data->getName() << " got validated");
+  //_LOG_DEBUG("Data " << data->getName() << " got validated");
 }
 
 void
 Communication::onValidationFailed(const std::shared_ptr<const ndn::Data>& data, const std::string& msg) {
-  _LOG_DEBUG(data->getName() << " validation failed. " << msg);
+  //_LOG_DEBUG(data->getName() << " validation failed. " << msg);
 }
 
 void
 Communication::runProducer()
 {
-  _LOG_DEBUG("Starting producer");
+  //_LOG_DEBUG("Starting producer");
   m_face.setInterestFilter(ndn::InterestFilter("/autondn/road-status"),
                            bind(&Communication::onInterest, this, _1, _2),
                            ndn::RegisterPrefixSuccessCallback(),
@@ -168,7 +169,7 @@ Communication::onRegisterFailed(const ndn::Name& prefix, const std::string& reas
 
 void
 Communication::onTimeout(const ndn::Interest& interest) {
-  _LOG_DEBUG("Timeout " << interest);
+  //_LOG_DEBUG("Timeout " << interest);
 }
 
 } //namespace autondn
