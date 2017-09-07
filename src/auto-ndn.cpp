@@ -16,6 +16,8 @@ namespace autondn {
 
 _LOG_INIT(autondn);
 
+static const ndn::Interest AutoNdn::CIP_KEY_INTEREST = ndn::Interest{"/autondn/CIP/request-key"};
+
 AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
   : m_face(face)
   , m_scheduler(scheduler)
@@ -111,6 +113,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     /* (1) generate vehicle pseudonym: <vehicle-pnym>/ <make-pnym>
        (2) Create key for the pseudonym
     */
+
     ndn::Name vehicleNewPnym = getNewPseudonym();
     ndn::security::pib::Identity vehicleNewPnymIdentity = m_keyChain.createIdentity(vehicleNewPnym); // create "Identity" for pseudonym
     ndn::security::pib::Key vehicleNewPnymKey = m_keyChain.createKey(vehicleNewPnymIdentity);        // create "Key" for pseudonym
@@ -123,8 +126,14 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     /*(3) Initiate the certificate retrieval process by asking for proxy's key, Interest: /autondn/CIP/request-key
           autondn-cip: onKeyRequestInitInterest()*/
     ndn::Interest interest("/autondn/CIP/request-key");
-    m_face.expressInterest(interest,
-                           std::bind(&AutoNdn::requestCertForPnym, this, _1, _2, vehicleNewPnym), // step (4) and (5) here
+
+    //| Use either a then() passed in to this function, or emit to a signal
+    //| Then, can test if the interest is formed correctly, and the key and identity match
+    m_face.expressInterest(CIP_KEY_INTEREST,
+                           [=, this] (const ndn::Interest& interest, const ndn::Data& data) {
+                             m_afterGetCipKey(data, vehicleNewPnym);
+                           }
+                           //| std::bind(&AutoNdn::requestCertForPnym, this, _1, _2, vehicleNewPnym), // step (4) and (5) here
                            std::bind([] {}));
     /*(4) After getting proxy key, create an encrypted interest
            Interest: /autondn/CIP/<cip-id>/E-CIP{manufacturer, E-Man{vid, K-VCurr, K-VNew}}
@@ -136,12 +145,18 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     */
   }
 
+  //| Given an interest I from a CIP X, a data D containing X's public key, and a pseudonym,
+  //| send an interest to X, like /autondn/CIP/X_id/cip_enc(my_make)/man_enc(current_key)/man_enc(new_key)
+
+  //| connect to m_afterGetCipKey
   void
-  AutoNdn::requestCertForPnym(const ndn::Interest& i, const ndn::Data& d, const ndn::Name& vehicleNewPnym) {
+  AutoNdn::requestCertForPnym(const ndn::Data& d, const ndn::Name& vehicleNewPnym) {
     ndn::Name interestName("/autondn/CIP");
 
     // get the name (id) of the proxy from interest and append it to the interest name; interest name: /autondn/CIP/<proxy-id>
-    interestName.append(ndn::Name(i.getName().get(-1)));
+    //| The CIP is returning a different interest than the one we sent?
+    //| Or its returning /autondn/CIP/request-key/<proxy-id> as interest, key as data?
+    interestName.append(ndn::Name(d.getName().get(-1)));
 
     // make certificate object from the certificate data packet
     ndn::security::v2::Certificate cert(d);
@@ -179,9 +194,7 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     ndn::ConstBufferPtr cipherVehicleNewKey = manKey.encrypt(vehicleNewKeyBits.getPublicKey().buf(), vehicleCurrentKeyBits.getPublicKey().size());
     interestName.append(cipherVehicleNewKey->buf(), cipherVehicleNewKey->size());
 
-
-
-    //Interest: /autondn/CIP/<cip-id>/E-CIP{manufacturer}/ E-Man{vid}/E-man{K-VCurr}, E-man{K-VNew}
+    //Interest: /autondn/CIP/<cip-id>/E-CIP{manufacturer}/E-Man{vid}/E-man{K-VCurr}/E-man{K-VNew}
     ndn::Interest interest(interestName);
     m_face.expressInterest(interest,
                            std::bind(&AutoNdn::installVehicleCert, this, _1, _2, vehicleNewKeyName), // got certificate, now install it
