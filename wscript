@@ -1,17 +1,45 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-from waflib import Utils, Build, Configure
+"""
+Copyright (c) 2014-2017,  The University of Memphis,
+                          Regents of the University of California,
+                          Arizona Board of Regents.
 
+This file is part of NLSR (Named-data Link State Routing).
+See AUTHORS.md for complete list of NLSR authors and contributors.
+
+NLSR is free software: you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+
+NLSR is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+NLSR, e.g., in COPYING.md file.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+VERSION = "0.1"
+APPNAME = "autondn"
+# BUGREPORT = "https://redmine.named-data.net/projects/nlsr"
+# URL = "https://named-data.net/doc/NLSR/"
+# GIT_TAG_PREFIX = "NLSR-"
+
+from waflib import Logs, Utils, Context
 import os
 
 def options(opt):
     opt.load(['compiler_cxx', 'gnu_dirs'])
-    opt.load(['default-compiler-flags', 'coverage', 'boost'], tooldir=['.waf-tools'])
+    opt.load(['default-compiler-flags', 'coverage', 'sanitizers',
+              'boost', 'doxygen', 'sphinx_build'],
+            tooldir=['.waf-tools'])
 
-    autondnopt = opt.add_option_group('Autondn Options')
+    nlsropt = opt.add_option_group('NLSR Options')
 
-    autondnopt.add_option('--with-tests', action='store_true', default=False, dest='with_tests',
+    nlsropt.add_option('--with-tests', action='store_true', default=False, dest='with_tests',
                        help='''build unit tests''')
+
 
 def configure(conf):
     conf.load(['compiler_cxx', 'gnu_dirs',
@@ -22,8 +50,8 @@ def configure(conf):
 
     conf.check_cfg(package='libndn-cxx', args=['--cflags', '--libs'],
                    uselib_store='NDN_CXX', mandatory=True)
-    boost_libs = 'system chrono program_options iostreams thread regex filesystem'
 
+    boost_libs = 'system chrono program_options iostreams thread regex filesystem'
     if conf.options.with_tests:
         conf.env['WITH_TESTS'] = 1
         conf.define('WITH_TESTS', 1);
@@ -32,6 +60,8 @@ def configure(conf):
     conf.check_boost(lib=boost_libs)
 
     conf.load('coverage')
+
+    conf.write_config_header('config.hpp')
 
 def build(bld):
     autondn_objects = bld(
@@ -55,3 +85,9 @@ def build(bld):
 
     if bld.env['WITH_TESTS']:
         bld.recurse('tests')
+
+def dist(ctx):
+    version(ctx)
+
+def distcheck(ctx):
+    version(ctx)
