@@ -68,7 +68,7 @@ private:
   //Motion m_motion;
   Map m_map;
   std::vector<std::pair<std::string, int>> m_path;
-  int m_roadTracker = 0;
+  uint m_roadTracker = 0;
 };
 
 } //end of namespace autondn

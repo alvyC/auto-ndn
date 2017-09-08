@@ -10,6 +10,7 @@
 #include <ndn-cxx/security/validator-config.hpp>
 #include <ndn-cxx/security/signing-info.hpp>
 #include <ndn-cxx/security/certificate-cache-ttl.hpp>
+#include <ndn-cxx/util/signal.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/cstdint.hpp>
@@ -24,6 +25,8 @@ static ndn::Name DEFAULT_BROADCAST_PREFIX("/autondn/broadcast");
 
 class AutoNdn {
 public:
+  using AfterGetCipKey = ndn::util::Signal<AutoNdn, const ndn::Data&, const ndn::Name&>;
+
   AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler);
 
   ndn::Face&
@@ -123,14 +126,21 @@ public:
   generateAndAddPseudonym();
 
   void
-  requestCertForPnym(const ndn::Interest&, const ndn::Data&, const ndn::Name&);
+  requestCertForPnym(const ndn::Data&, const ndn::Name&);
 
   void
   installVehicleCert(const ndn::Interest&, const ndn::Data&, const ndn::Name&);
 
+
 private:
+  //| Currently returns the same value each time, for the same car
   ndn::Name
   getNewPseudonym();
+
+public:
+  //| connect requestcertforpnym to this signal
+  AfterGetCipKey m_afterGetCipKey;
+  static const ndn::Interest CIP_KEY_INTEREST;
 
 private:
   ndn::Face& m_face;

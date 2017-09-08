@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(RemovalOnExpiration) {
 	Pseudonym pnym1(ndn::Name("1234"), ndn::Name("toyota"), ndn::time::seconds(3600));
 
 	ndn::util::DummyClientFace face;
-	ndn::util::scheduler::Scheduler& scheduler(face.getIoService());
+	ndn::util::scheduler::Scheduler scheduler(face.getIoService());
 	PseudonymPool pnymPool(scheduler);
 }
 
