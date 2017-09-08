@@ -104,7 +104,7 @@ public:
   ndn::shared_ptr<const ndn::IdentityCertificate>
   getCertificate(const ndn::Name& certificateNameWithoutVersion) {
     std::shared_ptr<const ndn::IdentityCertificate> cert =
-    m_certStore.find(certificateNameWithoutVersion);
+     m_certStore.find(certificateNameWithoutVersion);
 
     if (cert != nullptr) {
      std::cout << "Certificate Store: " << certificateNameWithoutVersion << std::endl;
@@ -131,8 +131,7 @@ public:
   void
   installVehicleCert(const ndn::Interest&, const ndn::Data&, const ndn::Name&);
 
-
-private:
+//private:
   //| Currently returns the same value each time, for the same car
   ndn::Name
   getNewPseudonym();
@@ -142,7 +141,7 @@ public:
   AfterGetCipKey m_afterGetCipKey;
   static const ndn::Interest CIP_KEY_INTEREST;
 
-private:
+
   ndn::Face& m_face;
   ndn::Scheduler& m_scheduler;
   Control m_control;

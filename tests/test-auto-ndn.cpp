@@ -74,7 +74,22 @@ BOOST_AUTO_TEST_CASE(TestGetCipKey)
  */
 BOOST_AUTO_TEST_CASE(TestGetPseudonymCert)
 {
+  ndn::Name cipId{"test-cip"};
+  ndn::Name cipFullName{"/autondn/CIP/test-cip"};
+  ndn::Name cipIdentity = g_keychain.createIdentity(cipFullName);
+  ndn::Name dataName{CIP_KEY_INTEREST};
+  dataName.append(cipId);
+  ndn::Name pseudonym = getNewPseudonym();
 
+  // Fetch the certificate
+  std::shared_ptr<ndn::IdentityCertificate> cipCert = g_keychain.getCertificate(cipIdentity);
+
+  // Encode it and attach it to the data
+  std::shared_ptr<ndn::Data> data = std::make_shared<ndn::Data>(dataName);
+  data->setContent(cipCert->wireEncode());
+
+  // Trigger the requesting of the pseudonym
+  requestCertForPnym(*data, pseudonym);
 }
 
 BOOST_AUTO_TEST_SUITE_END() // TestAutoNdn
