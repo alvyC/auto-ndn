@@ -150,8 +150,6 @@ AutoNdn::AutoNdn(ndn::Face& face, ndn::util::Scheduler& scheduler)
     ndn::Name interestName("/autondn/CIP");
 
     // get the name (id) of the proxy from interest and append it to the interest name; interest name: /autondn/CIP/<proxy-id>
-    //| The CIP is returning a different interest than the one we sent?
-    //| Or its returning /autondn/CIP/request-key/<proxy-id> as interest, key as data?
     interestName.append(ndn::Name(d.getName().get(-1)));
 
     // make certificate object from the certificate data packet

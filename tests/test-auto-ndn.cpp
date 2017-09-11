@@ -7,10 +7,27 @@
 namespace autondn {
 namespace tests {
 
+
+ndn::ConstBufferPtr
+getConstBufferFromEncryptedName(const ndn::Name& encryptedName, ndn::security::KeyChain& keychain,
+                         const ndn::Name& identityName) {
+  std::vector<uint8_t> nameByteArray = std::vector<uint8_t>{encryptedName.toUri().begin(),
+                                                            encryptedName.toUri().end()};
+  ndn::ConstBufferPtr namePlain =
+    keychain.getTpm().decryptInTpm(&nameByteArray[0], nameByteArray.size(),
+                                   keychain.getDefaultKeyForIdentity(identityName), false);
+  return namePlain;
+}
+
 class TestAutoNdnFixture : public BaseFixture
 {
 public:
   TestAutoNdnFixture() {}
+
+public:
+  const ndn::Name NETWORK = ndn::Name{"autondn"};
+  const ndn::Name CAR_MAKE = ndn::Name{"test-mfr"};
+  const ndn::Name CAR_ID = ndn::Name{"test-car-id"};
 };
 
 BOOST_FIXTURE_TEST_SUITE(TestAutoNdn, TestAutoNdnFixture)
@@ -74,26 +91,66 @@ BOOST_AUTO_TEST_CASE(TestGetCipKey)
  */
 BOOST_AUTO_TEST_CASE(TestGetPseudonymCert)
 {
+  // Have to create keypair for mfr, cip?
+
   ndn::Name cipId{"test-cip"};
   ndn::Name cipFullName{"/autondn/CIP/test-cip"};
   ndn::Name cipIdentity = g_keychain.createIdentity(cipFullName);
   ndn::Name dataName{AutoNdn::CIP_KEY_INTEREST.getName()};
   dataName.append(cipId);
-
+  // Create the manufacturer key
+  ndn::Name mfrIdentity = autoNdn.m_keyChain.createIdentity(m_makeCurrentPnym);
   ndn::util::DummyClientFace face{g_ioService};
+  // Create and initialize the AutoNdn instance
   AutoNdn autoNdn{face, g_scheduler};
-
+  autoNdn.getConfParameter().setNetwork(NETWORK);
+  autoNdn.getConfParameter().setCarMake(CAR_MAKE);
+  autoNdn.getConfParameter().setCarId(CAR_ID);
+  autoNdn.initialize();
   ndn::Name pseudonym = autoNdn.getNewPseudonym();
 
-  // Fetch the certificate
+  // Fetch the CIP cert
   std::shared_ptr<ndn::IdentityCertificate> cipCert = g_keychain.getCertificate(cipIdentity);
-
   // Encode it and attach it to the data
   std::shared_ptr<ndn::Data> data = std::make_shared<ndn::Data>(dataName);
   data->setContent(cipCert->wireEncode());
-
   // Trigger the requesting of the pseudonym
   autoNdn.requestCertForPnym(*data, pseudonym);
+
+  BOOST_REQUIRE(face.sentInterests().size() > 0);
+
+  std::shared_ptr<ndn::PublicKey> vehicleNewKey = autoNdn.m_keyChain.getPublicKey(pseudonym);
+  std::shared_ptr<ndn::PublicKey> vehicleCurrentKey =
+    autoNdn.m_keyChain.getPublicKey(m_vehicleCurrentPnym);
+  std::vector<uint8_t> nameByteArray;
+  bool didMatchInterest = false;
+  for (const auto& interest : face.sentInterests().size()) {
+    ndn::ConstBufferPtr pseudoKeyBuffer = getConstBufferFromEncryptedName(interest[-1], m_keyChain,
+                                                                          mfrIdentity);
+    ndn::security::v1::PublicKey decryptedPseudoKey = {pseudoKeyBuffer.buf(),
+                                                       pseudoKeyBuffer.size()};
+
+    ndn::ConstBuffer currentKeyBuffer = getConstBufferFromEncryptedName(interest[-2], m_keyChain,
+                                                                        mfrIdentity);
+    ndn::security::v1::PublicKey decryptedCurrentKey = {currentKeyBuffer.buf(),
+                                                        currentKeyBuffer.size()};
+
+    ndn::Name decryptedMfrName =
+      ndn::Name{ndn::Block{getConstBufferFromEncryptedName(interest[-3], g_keyChain, cipIdentity)}};
+
+    didMatchInterest = didMatchInterest || (decryptedMfrName == CAR_MAKE
+                                            && decryptedPseudoKey == vehicleNewKey
+                                            && decryptedCurrentKey == vehicleCurrentKey);
+  }
+  BOOST_CHECK(didMatchInterest);
+
+  /// Check sent interest
+  /// Should have three encrypted components
+  /// So, get last one, decrypt with man key, check equal to new pseudo key
+  /// Get second to last one, decrypt with man key, check equal to current key
+  /// Get third to last one, decrypt with CIP key, check equal to manufacturer name
+  /// Get fourth to last component, check equal to last component of data's name
+  ///
 }
 
 BOOST_AUTO_TEST_SUITE_END() // TestAutoNdn
