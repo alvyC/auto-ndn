@@ -53,11 +53,8 @@ import re
 from waflib import Utils, Logs, Errors
 from waflib.Configure import conf
 
-BOOST_LIBS = ['/usr/lib', '/usr/local/lib', '/opt/local/lib', '/sw/lib', '/lib',
-              '/usr/lib/x86_64-linux-gnu', '/usr/lib/i386-linux-gnu',
-              '/usr/local/ndn/lib', '/opt/ndn/lib']
-BOOST_INCLUDES = ['/usr/include', '/usr/local/include', '/opt/local/include', '/sw/include',
-                  '/usr/local/ndn/include', '/opt/ndn/include']
+BOOST_LIBS = ['/usr/lib', '/usr/local/lib', '/opt/local/lib', '/sw/lib', '/lib', '/usr/lib/x86_64-linux-gnu', '/usr/lib/i386-linux-gnu', '/usr/local/ndn/lib']
+BOOST_INCLUDES = ['/usr/include', '/usr/local/include', '/opt/local/include', '/sw/include', '/usr/local/ndn/include']
 BOOST_VERSION_FILE = 'boost/version.hpp'
 BOOST_VERSION_CODE = '''
 #include <iostream>
@@ -147,10 +144,10 @@ def boost_get_version(self, d):
 		except (OSError, IOError):
 			Logs.error("Could not read the file %r" % node.abspath())
 		else:
-			re_but1 = re.compile('^#define\\s+BOOST_LIB_VERSION\\s+"(.*)"', re.M)
+			re_but1 = re.compile('^#define\\s+BOOST_LIB_VERSION\\s+"(.+)"', re.M)
 			m1 = re_but1.search(txt)
 
-			re_but2 = re.compile('^#define\\s+BOOST_VERSION\\s+(\\d*)', re.M)
+			re_but2 = re.compile('^#define\\s+BOOST_VERSION\\s+(\\d+)', re.M)
 			m2 = re_but2.search(txt)
 
 			if m1 and m2:

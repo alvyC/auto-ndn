@@ -1,17 +1,19 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-from waflib import Utils, Build, Configure
+APPNAME = "auto-ndn"
 
+from waflib import Logs, Utils, Context
 import os
 
 def options(opt):
     opt.load(['compiler_cxx', 'gnu_dirs'])
-    opt.load(['default-compiler-flags', 'coverage', 'boost'], tooldir=['.waf-tools'])
+    opt.load(['default-compiler-flags', 'coverage', 'sanitizers',
+              'boost'],
+            tooldir=['.waf-tools'])
 
-    autondnopt = opt.add_option_group('Autondn Options')
-
+    autondnopt=opt.add_option_group('Autondn Options')
     autondnopt.add_option('--with-tests', action='store_true', default=False, dest='with_tests',
-                       help='''build unit tests''')
+                          help='''build unit tests''')
 
 def configure(conf):
     conf.load(['compiler_cxx', 'gnu_dirs',
@@ -51,7 +53,6 @@ def build(bld):
         features='cxx cxxprogram',
         source='src/main.cpp',
         use='autondn-objects',
-        #lib=['wiringPi'],
         cxxflags = '-DBOOST_LOG_DYN_LINK'
         )
 
